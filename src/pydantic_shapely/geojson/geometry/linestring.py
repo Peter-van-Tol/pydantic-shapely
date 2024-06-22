@@ -2,15 +2,21 @@
 """
 
 import typing
+
+try:
+    from typing import Annotated
+except ImportError:
+    from typing_extensions import Annotated
+
 from pydantic import BaseModel, Field
 import shapely
 
 from .point import CoordinatesPoint2D, CoordinatesPoint3D
 
-CoordinatesLineString2D = typing.Annotated[
+CoordinatesLineString2D = Annotated[
     typing.List[CoordinatesPoint2D], Field(min_length=2)
 ]
-CoordinatesLineString3D = typing.Annotated[
+CoordinatesLineString3D = Annotated[
     typing.List[CoordinatesPoint3D], Field(min_length=2)
 ]
 CoordinatesLineString = typing.Union[CoordinatesLineString2D, CoordinatesLineString3D]

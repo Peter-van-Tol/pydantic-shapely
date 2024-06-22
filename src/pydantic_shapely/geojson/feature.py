@@ -1,4 +1,10 @@
 import typing
+
+try:
+    from typing import Annotated
+except ImportError:
+    from typing_extensions import Annotated
+
 from pydantic import BaseModel, Field
 
 from shapely import from_geojson
@@ -67,7 +73,7 @@ class GeoJsonFeatureBaseModel(BaseModel, typing.Generic[S]):
         # These are populated by the __pydantic_init_subclass__ of the model on which
         # this model is based on, which is why this section is in a `TYPE_CHECKING` block.
         ParentDataModel: typing.ClassVar[  # pylint: disable=invalid-name
-            typing.Annotated[
+            Annotated[
                 typing.Type["FeatureBaseModel"],
                 Field(
                     default=...,

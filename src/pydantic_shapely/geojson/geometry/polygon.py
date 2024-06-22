@@ -2,6 +2,12 @@
 """
 
 import typing
+
+try:
+    from typing import Annotated
+except ImportError:
+    from typing_extensions import Annotated
+
 from pydantic import AfterValidator, BaseModel, Field
 import shapely
 
@@ -18,9 +24,9 @@ def check_linearring(
     return value
 
 
-CoordinatesPolygon2D = typing.Annotated[
+CoordinatesPolygon2D = Annotated[
     typing.List[
-        typing.Annotated[
+        Annotated[
             typing.List[CoordinatesPoint2D],
             AfterValidator(check_linearring),
             Field(min_length=4),
@@ -28,9 +34,9 @@ CoordinatesPolygon2D = typing.Annotated[
     ],
     Field(min_length=1),
 ]
-CoordinatesPolygon3D = typing.Annotated[
+CoordinatesPolygon3D = Annotated[
     typing.List[
-        typing.Annotated[
+        Annotated[
             typing.List[CoordinatesPoint3D],
             AfterValidator(check_linearring),
             Field(min_length=4),

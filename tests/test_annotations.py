@@ -1,5 +1,11 @@
 
 import typing
+
+try:
+    from typing import Annotated
+except ImportError:
+    from typing_extensions import Annotated
+
 import pytest
 
 from pydantic import create_model
@@ -108,7 +114,7 @@ def test_annotation_correct_geom_type_roundtrip(
     
     model = create_model(
         f"{geom_type.__name__}TestModel",
-        geometry=(typing.Annotated[geom_type, GeometryField()], ...)
+        geometry=(Annotated[geom_type, GeometryField()], ...)
     )
 
     instance = model(geometry=EXAMPLES_OBJ_2D[geom_type])
@@ -124,7 +130,7 @@ def test_annotation_correct_geom_type_union_roundtrip(
     
     model = create_model(
         f"{geom_type.__name__}TestModel",
-        geometry=(typing.Annotated[typing.Union[geom_type, Point], GeometryField()], ...)
+        geometry=(Annotated[typing.Union[geom_type, Point], GeometryField()], ...)
     )
 
     instance = model(geometry=EXAMPLES_OBJ_2D[geom_type])
@@ -227,7 +233,7 @@ def test_annotation_wrong_geom_type(
     
     model = create_model(
         f"{geom_type.__name__}TestModel",
-        geometry=(typing.Annotated[geom_type, GeometryField()], ...)
+        geometry=(Annotated[geom_type, GeometryField()], ...)
     )
 
     with pytest.raises(ValueError):
@@ -248,7 +254,7 @@ def test_no_shapely_geometry(type_: typing.Type):
     with pytest.raises(TypeError):
         create_model(
             "NoGeomTypeTestModel",
-            geometry=(typing.Annotated[type_, GeometryField()], ...)
+            geometry=(Annotated[type_, GeometryField()], ...)
         )
 
 
@@ -276,7 +282,7 @@ def test_z_values_forbid(geom_type, geom, _):
 
     model = create_model(
         "NoGeomTypeTestModel",
-        geometry=(typing.Annotated[geom_type, GeometryField(z_values="forbid")], ...)
+        geometry=(Annotated[geom_type, GeometryField(z_values="forbid")], ...)
     )
 
     with pytest.raises(ValueError):
@@ -289,7 +295,7 @@ def test_z_values_required(geom_type, geom, _):
 
     model = create_model(
         "NoGeomTypeTestModel",
-        geometry=(typing.Annotated[geom_type, GeometryField(z_values="required")], ...)
+        geometry=(Annotated[geom_type, GeometryField(z_values="required")], ...)
     )
 
     with pytest.raises(ValueError):
@@ -302,7 +308,7 @@ def test_z_values_strip(geom_type, geom, expected):
 
     model = create_model(
         "NoGeomTypeTestModel",
-        geometry=(typing.Annotated[geom_type, GeometryField(z_values="strip")], ...)
+        geometry=(Annotated[geom_type, GeometryField(z_values="strip")], ...)
     )
 
     test = model(geometry=geom)

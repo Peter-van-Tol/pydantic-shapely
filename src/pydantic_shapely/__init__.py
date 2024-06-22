@@ -14,13 +14,16 @@ A basic example is shown below.
 
 .. code-block:: python
 
-    import typing
+    try:
+        fromn typing import Annotated
+    except ImportError:
+        from typing_extensions import Annotated
     from pydantic_shapely.fields import GeometryField, FeatureBaseModel
 
     from shapely import Point
 
     class MyModel(FeatureBaseModel):
-        geometry: typing.Annotated[
+        geometry: Annotated[
             Point,
             GeometryField()
         ]
@@ -64,7 +67,7 @@ These models can also be used in a FastAPI application to serialize/deserialize 
     class Test(FeatureBaseModel):
         '''Test class for a feature which supports GeoJSON serialization.
         '''
-        geometry: typing.Annotated[
+        geometry: Annotated[
             Point,
             GeometryField()
         ]

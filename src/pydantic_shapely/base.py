@@ -4,6 +4,10 @@ from inspect import isclass
 import json
 import typing
 
+try:
+    from typing import Annotated
+except ImportError:
+    from typing_extensions import Annotated
 
 from pydantic import BaseModel, Field, create_model
 from pydantic.fields import FieldInfo
@@ -43,7 +47,7 @@ class FeatureBaseModel(BaseModel):
         # These are populated by the __pydantic_init_subclass__, which is why
         # this section is in a `TYPE_CHECKING` block.
         GeoJsonDataModel: typing.ClassVar[  # pylint: disable=invalid-name
-            typing.Annotated[
+            Annotated[
                 typing.Type,
                 Field(
                     default=...,

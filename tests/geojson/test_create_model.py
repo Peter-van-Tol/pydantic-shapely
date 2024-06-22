@@ -1,5 +1,11 @@
 
 import typing
+
+try:
+    from typing import Annotated
+except ImportError:
+    from typing_extensions import Annotated
+
 import pytest
 
 from pydantic import BaseModel
@@ -22,7 +28,7 @@ S = typing.TypeVar("S", bound=BaseGeometry)
 def test_create_featuremodel():
 
     class TestModel(FeatureBaseModel):
-        geometry: typing.Annotated[Point, GeometryField()]
+        geometry: Annotated[Point, GeometryField()]
         a: int
         b: str
 
@@ -40,7 +46,7 @@ def test_create_featuremodel():
 def test_create_featuremodel_union():
 
     class TestModel(FeatureBaseModel):
-        geometry: typing.Annotated[typing.Union[Point, LineString], GeometryField()]
+        geometry: Annotated[typing.Union[Point, LineString], GeometryField()]
         a: int
         b: str
 

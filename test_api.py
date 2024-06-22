@@ -1,4 +1,8 @@
-import typing
+try:
+    from typing import Annotated
+except ImportError:
+    from typing_extensions import Annotated
+
 from fastapi import FastAPI
 from shapely import Point, LineString, Polygon
 
@@ -12,7 +16,7 @@ app = FastAPI()
 class Test(BaseModel):
     """Test class for a feature which supports GeoJSON serialization.
     """
-    geometry: typing.Annotated[
+    geometry: Annotated[
         LineString | Polygon,
         GeometryField(),
     ]
