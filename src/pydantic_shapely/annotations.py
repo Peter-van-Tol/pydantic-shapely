@@ -91,6 +91,7 @@ class GeometryField:
             supplied geometry is not of the expected type.
         """
         # Test whether user supplied the geometry directly
+        print(value, self.__geometry_type__)
         if isinstance(value, self.__geometry_type__):
             value = self._validate_z_values(value)
             return value

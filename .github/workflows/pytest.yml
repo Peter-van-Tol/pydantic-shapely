@@ -23,7 +23,7 @@ jobs:
           pip install . 
       - name: Test with pytest  
         run: |  
-          coverage run -m pytest  -v -s  
+          coverage run -m pytest -vvv -s  
       - name: Generate Coverage Report  
         run: |  
           coverage report -m
