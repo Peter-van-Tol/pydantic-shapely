@@ -1,0 +1,27 @@
+from fastapi import FastAPI
+from shapely import Point
+
+from pydantic_shapely.geojson import FeatureModel
+from pydantic_shapely import PointField, LineStringField
+
+
+app = FastAPI()
+
+
+class Test(FeatureModel[PointField]):
+    """Test class for a feature which supports GeoJSON serialization.
+    """
+    
+    name: str = "Hello World"
+    answer: int = 42
+
+print(Test.__geometry_type__())
+
+@app.get("/")
+async def root() -> Test.GeoJsonDataModel:
+    return Test(geometry=Point(0,0)).as_geojson_feature()
+
+
+@app.post("/")
+async def root(value: Test.GeoJsonDataModel) -> Test:
+    return Test.from_geojson_feature(value)
