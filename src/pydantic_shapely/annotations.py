@@ -94,20 +94,20 @@ class GeometryField:
         if isinstance(value, BaseGeometry):
             if isclass(self.__geometry_type__):
                 # The geometry type is a class, check if the geometry is an instance of the class
-                if isinstance(geometry, self.__geometry_type__):
+                if isinstance(value, self.__geometry_type__):
                     return self._validate_z_values(value)
                 raise ValueError(
-                    f"Supplied geometry ({geometry.geom_type}) is not a "
+                    f"Supplied geometry ({value.geom_type}) is not a "
                     f"{self.__geometry_type__.__name__}."
                 )
             else:
                 # The geometry type is a Union, check if the geometry is an instance of any of the
                 # classes
                 supported_types = typing.get_args(self.__geometry_type__)
-                if any(isinstance(geometry, t) for t in supported_types):
+                if any(isinstance(value, t) for t in supported_types):
                     return self._validate_z_values(value)
                 raise ValueError(
-                    f"Supplied geometry ({geometry.geom_type}) is not one of the expected "
+                    f"Supplied geometry ({value.geom_type}) is not one of the expected "
                     f"types: {', '.join([t.__name__ for t in supported_types])}."
                 )
         
