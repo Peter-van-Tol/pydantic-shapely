@@ -49,7 +49,7 @@ def create_geojson_datamodel(
             )
         ]
     # Create the fields and the property model
-    fields: dict[str, typing.Any] = {
+    fields: typing.Dict[str, typing.Any] = {
         key: (value.annotation, value)
         for key, value in feature_cls.model_fields.items()
         if key != geometry_field

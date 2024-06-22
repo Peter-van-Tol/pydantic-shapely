@@ -161,7 +161,7 @@ class GeometryField:
 
     def __get_pydantic_json_schema__(
         self, _core_schema: core_schema.CoreSchema, handler: GetJsonSchemaHandler
-    ) -> dict[str, typing.Any]:
+    ) -> typing.Dict[str, typing.Any]:
         # Determine the example WKT string for the geometry type.
         examples = [""]
         if isclass(self.__geometry_type__):
