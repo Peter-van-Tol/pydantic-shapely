@@ -30,13 +30,12 @@ def create_geojson_datamodel(
             z_values = meta.z_values
             break
     # Select the correct mapping
-    match z_values:
-        case "strip", "forbidden":
-            mapping = MAPPING_2D
-        case "required":
-            mapping = MAPPING_3D
-        case _:
-            mapping = MAPPING
+    if z_values in ["strip", "forbidden"]:
+        mapping = MAPPING_2D
+    elif z_values == "required":
+        mapping = MAPPING_3D
+    else:
+        mapping = MAPPING
     # Select the correct field_type
     if isclass(geometry_field_info.annotation):
         # NOTE: the field_type is always an Union. In case the annotation is a

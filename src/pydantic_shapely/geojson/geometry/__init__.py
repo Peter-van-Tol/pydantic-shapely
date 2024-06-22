@@ -58,6 +58,24 @@ MAPPING = {
     # shapely.GeometryCollection: GeometryCollection
 }
 
+CONVERTERS = {
+    "Point": lambda shape: Point(coordinates=tuple(shape.coords[0])),
+    "MultiPoint": lambda shape: MultiPoint(coordinates=[tuple(geom.coords[0]) for geom in shape.geoms]),
+    "LineString": lambda shape: LineString(coordinates=shape.coords),
+    "MultiLineString": lambda shape: MultiLineString(coordinates=[geom.coords for geom in shape.geoms]),
+    "Polygon": lambda shape: Polygon(coordinates=[shape.exterior.coords, *[hole.coords for hole in shape.interiors]]),
+    "MultiPolygon": lambda shape: MultiPolygon(
+        coordinates=[
+            [
+                geom.exterior.coords,
+                *[hole.coords for hole in geom.interiors]
+            ]
+            for geom in shape.geoms
+        ]
+    )
+    # case "GeometryCollection":
+    #     return GeometryCollection(**shape.__geo_interface__)
+}
 
 def convert_shapely_to_geojson_object(
     shape: shapely.geometry.base.BaseGeometry,
@@ -79,35 +97,10 @@ def convert_shapely_to_geojson_object(
     mapping = MAPPING_2D
     if shape.has_z:
         mapping = MAPPING_3D
-    match shape.geom_type:
-        case "Point":
-            return Point(coordinates=tuple(shape.coords[0]))
-        case "MultiPoint":
-            return MultiPoint(coordinates=[tuple(geom.coords[0]) for geom in shape.geoms])
-        case "LineString":
-            return LineString(coordinates=shape.coords)
-        case "MultiLineString":
-            return MultiLineString(coordinates=[geom.coords for geom in shape.geoms])
-        case "Polygon":
-            return Polygon(coordinates=[
-                shape.exterior.coords,
-                *[hole.coords for hole in shape.interiors]
-            ])
-        case "MultiPolygon":
-            return MultiPolygon(
-                coordinates=[
-                    [
-                        geom.exterior.coords,
-                        *[hole.coords for hole in geom.interiors]
-                    ]
-                    for geom in shape.geoms
-                ]
-            )
-        # case "GeometryCollection":
-        #     return GeometryCollection(**shape.__geo_interface__)
-        case _:
-            raise ValueError(f"Unsupported Shapely geometry type: {shape.geom_type}")
-
+    try:
+        return CONVERTERS[shape.geom_type](shape)
+    except KeyError:
+        raise ValueError(f"Unsupported Shapely geometry type: {shape.geom_type}")
 
 
 __all__ = [
