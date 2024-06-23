@@ -74,10 +74,10 @@ the ``FeatureBaseModel`` class. This class is a subclass of the Pydantic ``BaseM
 and adds the following methods and attributes to the model:
 
 - ``GeoJsonDataModel``: an attribute that contains the Pydantic GeoJSON model based on the 
-    original model. This model is created when the subclass is created.
+  original model. This model is created when the subclass is created.
 - ``to_geojson_model``: a method that returns the GeoJSON model of the model instance. To convert
-    the GeoJSON model back to the original model, you can use the ``to_feature_model`` method on
-    the GeoJSON model.
+  the GeoJSON model back to the original model, you can use the ``to_feature_model`` method on
+  the GeoJSON model.
 - ``model_dump_geojson``: a method that serializes the model to GeoJSON format.
 
 Example usage of the GeoJSON serialization:
@@ -142,7 +142,7 @@ Work in progress
 ----------------
 This package is still in development. The following features are planned for the future:
 
-- ``GeometryCollection``s are not yet supported.
+- ``GeometryCollection`` is not yet supported.
 - Adding more options for the ``GeometryField`` annotation. For example, the ability to
   set a bounding box for the geometry.
 - Adding the CRS to the both ``GeometryField`` and the GeoJSON serialization. This functionality
