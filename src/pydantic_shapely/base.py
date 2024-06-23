@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from inspect import isclass
 import json
 import typing
+from inspect import isclass
 
 try:
     from typing import Annotated
@@ -11,12 +11,7 @@ except ImportError:
 
 from pydantic import BaseModel, Field, create_model
 from pydantic.fields import FieldInfo
-from shapely import (
-    Point,
-    LineString,
-    from_geojson,
-    to_geojson
-)
+from shapely import LineString, Point, from_geojson, to_geojson
 from shapely.geometry.base import BaseGeometry
 
 # For static type checking, whilst preventing circular import
@@ -40,8 +35,9 @@ class FeatureBaseModel(BaseModel):
         model_dump_geojson: Generates a GeoJSON representation of the model.
         model_validate_geojson: Validate the given JSON data against the Pydantic model.
     """
+
     __geometry_field__: typing.ClassVar[str] = "geometry"
-        
+
     if typing.TYPE_CHECKING:
         # Here we provide annotations for the attributes of FeatureModel.
         # These are populated by the __pydantic_init_subclass__, which is why
@@ -68,6 +64,7 @@ class FeatureBaseModel(BaseModel):
     def __pydantic_init_subclass__(cls, **kwargs):
         # Deferred import to prevent circular import
         from pydantic_shapely.geojson import create_geojson_datamodel
+
         # Run init subclass from parent classes
         super().__pydantic_init_subclass__(**kwargs)
         # Check whether the geometry field exists in the class
@@ -103,7 +100,7 @@ class FeatureBaseModel(BaseModel):
             geometry=json.loads(to_geojson(getattr(self, self.__geometry_field__))),
             properties=self.model_dump(exclude={"geometry"}),
         )
-    
+
     def model_dump_geojson(self) -> str:
         """
         Dumps the model to a GeoJson string.

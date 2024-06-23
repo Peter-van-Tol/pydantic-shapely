@@ -8,8 +8,8 @@ try:
 except ImportError:
     from typing_extensions import Annotated
 
-from pydantic import BaseModel, Field
 import shapely
+from pydantic import BaseModel, Field
 
 from .point import CoordinatesPoint2D, CoordinatesPoint3D
 

@@ -2,11 +2,11 @@
 """
 
 import typing
-from pydantic import BaseModel
+
 import shapely
+from pydantic import BaseModel
 
 from .point import CoordinatesPoint2D, CoordinatesPoint3D
-
 
 CoordinatesMultiPoint2D = typing.List[CoordinatesPoint2D]
 CoordinatesMultiPoint3D = typing.List[CoordinatesPoint3D]

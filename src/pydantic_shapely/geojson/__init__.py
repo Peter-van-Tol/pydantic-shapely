@@ -1,21 +1,20 @@
 from __future__ import annotations
+
 import typing
 from inspect import isclass
 
-from pydantic import (
-    create_model
-)
+from pydantic import create_model
 
-from pydantic_shapely import GeometryField, FeatureBaseModel
+from pydantic_shapely import FeatureBaseModel, GeometryField
+
 from .feature import GeoJsonFeatureBaseModel
 from .geometry import MAPPING, MAPPING_2D, MAPPING_3D
 
 
 def create_geojson_datamodel(
-        feature_cls: "FeatureBaseModel",
-        geometry_field: str,
-
-    ) -> GeoJsonFeatureBaseModel[typing.Any]:
+    feature_cls: "FeatureBaseModel",
+    geometry_field: str,
+) -> GeoJsonFeatureBaseModel[typing.Any]:
     """Creates a Pydantic model for the GeoJSON feature.
 
     Returns:
@@ -44,7 +43,8 @@ def create_geojson_datamodel(
         field_type = typing.Union[mapping[geometry_field_info.annotation]]
     else:
         field_type = typing.Union[
-            tuple(mapping[arg] for arg in typing.get_args(geometry_field_info.annotation)
+            tuple(
+                mapping[arg] for arg in typing.get_args(geometry_field_info.annotation)
             )
         ]
     # Create the fields and the property model

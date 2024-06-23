@@ -6,37 +6,32 @@ except ImportError:
     from typing_extensions import Annotated
 
 from pydantic import BaseModel, Field
-
 from shapely import from_geojson
 
-from pydantic_shapely.geojson.geometry import (
-    Point2D,
-    Point3D,
-    Point,
-    MultiPoint2D,
-    MultiPoint3D,
-    MultiPoint,
+from pydantic_shapely.base import FeatureBaseModel
+from pydantic_shapely.geojson.geometry import (  # GeometryCollection2D,; GeometryCollection3D,; GeometryCollection,
+    LineString,
     LineString2D,
     LineString3D,
-    LineString,
+    MultiLineString,
     MultiLineString2D,
     MultiLineString3D,
-    MultiLineString,
-    Polygon2D,
-    Polygon3D,
-    Polygon,
+    MultiPoint,
+    MultiPoint2D,
+    MultiPoint3D,
+    MultiPolygon,
     MultiPolygon2D,
     MultiPolygon3D,
-    MultiPolygon,
-    # GeometryCollection2D,
-    # GeometryCollection3D,
-    # GeometryCollection,
+    Point,
+    Point2D,
+    Point3D,
+    Polygon,
+    Polygon2D,
+    Polygon3D,
 )
 
-from pydantic_shapely.base import FeatureBaseModel
-
 S = typing.TypeVar(
-    "S", 
+    "S",
     Point2D,
     Point3D,
     Point,
@@ -88,8 +83,9 @@ class GeoJsonFeatureBaseModel(BaseModel, typing.Generic[S]):
         based off.
         """
         property_dict = {
-            self.ParentDataModel.__geometry_field__: 
-                from_geojson(self.geometry.model_dump_json()),
+            self.ParentDataModel.__geometry_field__: from_geojson(
+                self.geometry.model_dump_json()
+            ),
             **self.properties.model_dump(),
         }
         return self.ParentDataModel.model_validate(property_dict)

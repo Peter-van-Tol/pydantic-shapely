@@ -8,8 +8,8 @@ try:
 except ImportError:
     from typing_extensions import Annotated
 
-from pydantic import AfterValidator, BaseModel, Field
 import shapely
+from pydantic import AfterValidator, BaseModel, Field
 
 from .point import CoordinatesPoint2D, CoordinatesPoint3D
 
@@ -58,10 +58,7 @@ class PolygonBase(BaseModel, typing.Generic[PolygonTypeVar]):
 
     def to_shapely(self) -> shapely.Polygon:
         """Convert the polygon to a Shapely polygon."""
-        return shapely.Polygon(
-            self.coordinates[0],
-            self.coordinates[1:]
-        )
+        return shapely.Polygon(self.coordinates[0], self.coordinates[1:])
 
 
 Polygon2D = PolygonBase[CoordinatesPolygon2D]

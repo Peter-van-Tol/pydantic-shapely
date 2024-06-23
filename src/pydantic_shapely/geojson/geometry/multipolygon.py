@@ -2,11 +2,11 @@
 """
 
 import typing
-from pydantic import BaseModel
+
 import shapely
+from pydantic import BaseModel
 
 from .polygon import CoordinatesPolygon2D, CoordinatesPolygon3D
-
 
 CoordinatesMultiPolygon2D = typing.List[CoordinatesPolygon2D]
 CoordinatesMultiPolygon3D = typing.List[CoordinatesPolygon3D]
@@ -32,8 +32,7 @@ class MultiPolygonBase(BaseModel, typing.Generic[MultiPolygonTypeVar]):
         return shapely.MultiPolygon(
             [
                 shapely.Polygon(sequence[0], sequence[1:])
-                for sequence
-                in self.coordinates
+                for sequence in self.coordinates
             ]
         )
 

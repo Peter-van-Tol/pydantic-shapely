@@ -1,12 +1,11 @@
 import dataclasses
 import typing
 from inspect import isclass
-from pydantic import GetCoreSchemaHandler, GetJsonSchemaHandler
-from pydantic_core import core_schema
 
 import shapely
+from pydantic import GetCoreSchemaHandler, GetJsonSchemaHandler
+from pydantic_core import core_schema
 from shapely.geometry.base import BaseGeometry
-
 
 # Example WKT strings for different geometry types.
 # Source: https://www.ibm.com/docs/en/i/7.4?topic=formats-well-known-text-wkt-format
@@ -38,6 +37,7 @@ EXAMPLES = {
 # - required: the geometry must be strictly 2-dimensional. A ValueError will
 #   raised when a shape without z-values is provided.
 ZValues = typing.Literal["required", "allow", "strip", "forbidden"]
+
 
 @dataclasses.dataclass
 class GeometryField:
@@ -110,7 +110,7 @@ class GeometryField:
                     f"Supplied geometry ({value.geom_type}) is not one of the expected "
                     f"types: {', '.join([t.__name__ for t in supported_types])}."
                 )
-        
+
         # Convert the geometry to a point, the geometry should be a valid WKT
         try:
             geometry: BaseGeometry = shapely.wkt.loads(value)

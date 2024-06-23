@@ -18,15 +18,15 @@ geometry to a Shapely geometry. To convert a Shapely geometry to a GeoJSON
 geometry, one can use the `to_geojson` function from this sub-module.
 """
 
-from . import _base
-from .point import Point2D, Point3D, Point
-from .multipoint import MultiPoint2D, MultiPoint3D, MultiPoint
-from .linestring import LineString2D, LineString3D, LineString
-from .multilinestring import MultiLineString2D, MultiLineString3D, MultiLineString
-from .polygon import Polygon2D, Polygon3D, Polygon
-from .multipolygon import MultiPolygon2D, MultiPolygon3D, MultiPolygon
-
 import shapely
+
+from . import _base
+from .linestring import LineString, LineString2D, LineString3D
+from .multilinestring import MultiLineString, MultiLineString2D, MultiLineString3D
+from .multipoint import MultiPoint, MultiPoint2D, MultiPoint3D
+from .multipolygon import MultiPolygon, MultiPolygon2D, MultiPolygon3D
+from .point import Point, Point2D, Point3D
+from .polygon import Polygon, Polygon2D, Polygon3D
 
 MAPPING_2D = {
     shapely.Point: Point2D,
@@ -60,22 +60,26 @@ MAPPING = {
 
 CONVERTERS = {
     "Point": lambda shape: Point(coordinates=tuple(shape.coords[0])),
-    "MultiPoint": lambda shape: MultiPoint(coordinates=[tuple(geom.coords[0]) for geom in shape.geoms]),
+    "MultiPoint": lambda shape: MultiPoint(
+        coordinates=[tuple(geom.coords[0]) for geom in shape.geoms]
+    ),
     "LineString": lambda shape: LineString(coordinates=shape.coords),
-    "MultiLineString": lambda shape: MultiLineString(coordinates=[geom.coords for geom in shape.geoms]),
-    "Polygon": lambda shape: Polygon(coordinates=[shape.exterior.coords, *[hole.coords for hole in shape.interiors]]),
+    "MultiLineString": lambda shape: MultiLineString(
+        coordinates=[geom.coords for geom in shape.geoms]
+    ),
+    "Polygon": lambda shape: Polygon(
+        coordinates=[shape.exterior.coords, *[hole.coords for hole in shape.interiors]]
+    ),
     "MultiPolygon": lambda shape: MultiPolygon(
         coordinates=[
-            [
-                geom.exterior.coords,
-                *[hole.coords for hole in geom.interiors]
-            ]
+            [geom.exterior.coords, *[hole.coords for hole in geom.interiors]]
             for geom in shape.geoms
         ]
-    )
+    ),
     # case "GeometryCollection":
     #     return GeometryCollection(**shape.__geo_interface__)
 }
+
 
 def convert_shapely_to_geojson_object(
     shape: shapely.geometry.base.BaseGeometry,
@@ -128,5 +132,5 @@ __all__ = [
     "MAPPING_2D",
     "MAPPING_3D",
     "MAPPING",
-    "convert_shapely_to_geojson_object"
+    "convert_shapely_to_geojson_object",
 ]

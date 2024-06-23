@@ -1,4 +1,3 @@
-
 import typing
 
 try:
@@ -7,20 +6,24 @@ except ImportError:
     from typing_extensions import Annotated
 
 import pytest
-
 from pydantic import BaseModel
-from pydantic_shapely import FeatureBaseModel, GeometryField
-from pydantic_shapely.geojson import GeoJsonFeatureBaseModel, create_geojson_datamodel, geometry
 from shapely import (
-    Point,
-    MultiPoint,
+    GeometryCollection,
     LineString,
     MultiLineString,
-    Polygon,
+    MultiPoint,
     MultiPolygon,
-    GeometryCollection,
+    Point,
+    Polygon,
 )
 from shapely.geometry.base import BaseGeometry
+
+from pydantic_shapely import FeatureBaseModel, GeometryField
+from pydantic_shapely.geojson import (
+    GeoJsonFeatureBaseModel,
+    create_geojson_datamodel,
+    geometry,
+)
 
 S = typing.TypeVar("S", bound=BaseGeometry)
 
@@ -39,8 +42,10 @@ def test_create_featuremodel():
     class TestModelGeoJsonFeature(GeoJsonFeatureBaseModel[geometry.Point]):
         properties: TestModelGeoJsonProperties
 
-
-    assert create_geojson_datamodel(TestModel, "geometry").model_json_schema() == TestModelGeoJsonFeature.model_json_schema()
+    assert (
+        create_geojson_datamodel(TestModel, "geometry").model_json_schema()
+        == TestModelGeoJsonFeature.model_json_schema()
+    )
 
 
 def test_create_featuremodel_union():
@@ -54,8 +59,12 @@ def test_create_featuremodel_union():
         a: int
         b: str
 
-    class TestModelGeoJsonFeature(GeoJsonFeatureBaseModel[typing.Union[geometry.Point, geometry.LineString]]):
+    class TestModelGeoJsonFeature(
+        GeoJsonFeatureBaseModel[typing.Union[geometry.Point, geometry.LineString]]
+    ):
         properties: TestModelGeoJsonProperties
 
-
-    assert create_geojson_datamodel(TestModel, "geometry").model_json_schema() == TestModelGeoJsonFeature.model_json_schema()
+    assert (
+        create_geojson_datamodel(TestModel, "geometry").model_json_schema()
+        == TestModelGeoJsonFeature.model_json_schema()
+    )

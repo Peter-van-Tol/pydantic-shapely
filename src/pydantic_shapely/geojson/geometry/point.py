@@ -2,8 +2,9 @@
 """
 
 import typing
-from pydantic import BaseModel
+
 import shapely
+from pydantic import BaseModel
 
 CoordinatesPoint2D = typing.Tuple[float, float]
 CoordinatesPoint3D = typing.Tuple[float, float, float]
