@@ -24,7 +24,7 @@ os.environ["PYTHONPATH"] = root
 
 # -- API documentation -------------------------------------------------------
 # `sphinx-apidoc` is supported by default. Additional API documentation providers.
-# One can select the preferred method with the variable below. Accepted options 
+# One can select the preferred method with the variable below. Accepted options
 # are: `sphinx-apidoc`, or 'None'. The variable is case-insensitive
 api_documentation = "sphinx-apidoc"
 
@@ -60,6 +60,7 @@ def run_sphinx_apidoc():
         apidoc.main(args)
     except Exception as e:
         print("Running `sphinx-apidoc` failed!\n{}".format(e))
+
 
 if api_documentation.lower() == "sphinx-apidoc":
     run_sphinx_apidoc()
