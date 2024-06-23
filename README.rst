@@ -55,6 +55,7 @@ having to set ``arbitrary_types_allowed`` to ``True``. You only have to add the
 With the ``GeometryField`` allows also to set the following parameters whether the geometry
 should be 2- or 3-dimensional with the parameter ``z_values``. The following values are
 allowed:
+
 - ``forbidden``: the geometry must be strictly 2-dimensional. A ValueError will
   raised when a shape with z-values is provided.
 - ``strip``: the geometry may have z-values. These values will be stripped from
@@ -71,6 +72,7 @@ With ``pydantic-shapely`` you can also serialize the a Pydantic model with a Sha
 to GeoJSON format. In order to add this functionality to your model, you have to inherit from
 the ``FeatureBaseModel`` class. This class is a subclass of the Pydantic ``BaseModel`` class
 and adds the following methods and attributes to the model:
+
 - ``GeoJsonDataModel``: an attribute that contains the Pydantic GeoJSON model based on the 
     original model. This model is created when the subclass is created.
 - ``to_geojson_model``: a method that returns the GeoJSON model of the model instance. To convert
@@ -139,6 +141,7 @@ create a simple annotated API that returns a GeoJSON representation of a Shapely
 Work in progress
 ----------------
 This package is still in development. The following features are planned for the future:
+
 - ``GeometryCollection``s are not yet supported.
 - Adding more options for the ``GeometryField`` annotation. For example, the ability to
   set a bounding box for the geometry.
