@@ -136,7 +136,7 @@ create a simple annotated API that returns a GeoJSON representation of a Shapely
 
     if __name__ == "__main__":
         import uvicorn
-        uvicorn.run(app, host="
+        uvicorn.run(app, host="0.0.0.0", port=8000)
 
 Work in progress
 ----------------
