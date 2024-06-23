@@ -6,6 +6,7 @@ import typing
 import shapely
 from pydantic import BaseModel
 
+from ._base import GeometryBase
 from .polygon import CoordinatesPolygon2D, CoordinatesPolygon3D
 
 CoordinatesMultiPolygon2D = typing.List[CoordinatesPolygon2D]
@@ -21,7 +22,7 @@ MultiPolygonTypeVar = typing.TypeVar(
 )
 
 
-class MultiPolygonBase(BaseModel, typing.Generic[MultiPolygonTypeVar]):
+class MultiPolygonBase(GeometryBase, typing.Generic[MultiPolygonTypeVar]):
     """A multi-polygon geometry."""
 
     type: str = "MultiPolygon"

@@ -6,11 +6,13 @@ import typing
 try:
     from typing import Annotated
 except ImportError:
-    from typing_extensions import Annotated
+    # This import is required in Python 3.8
+    from typing_extensions import Annotated  # type: ignore
 
 import shapely
 from pydantic import BaseModel, Field
 
+from ._base import GeometryBase
 from .point import CoordinatesPoint2D, CoordinatesPoint3D
 
 CoordinatesLineString2D = Annotated[
@@ -28,7 +30,7 @@ LinesStringTypeVar = typing.TypeVar(
 )
 
 
-class LineStringBase(BaseModel, typing.Generic[LinesStringTypeVar]):
+class LineStringBase(GeometryBase, typing.Generic[LinesStringTypeVar]):
     """A line string geometry."""
 
     type: str = "LineString"

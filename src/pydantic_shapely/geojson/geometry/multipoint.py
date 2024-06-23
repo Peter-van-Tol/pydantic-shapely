@@ -6,6 +6,7 @@ import typing
 import shapely
 from pydantic import BaseModel
 
+from ._base import GeometryBase
 from .point import CoordinatesPoint2D, CoordinatesPoint3D
 
 CoordinatesMultiPoint2D = typing.List[CoordinatesPoint2D]
@@ -19,7 +20,7 @@ MultiPointTypeVar = typing.TypeVar(
 )
 
 
-class MultiPointBase(BaseModel, typing.Generic[MultiPointTypeVar]):
+class MultiPointBase(GeometryBase, typing.Generic[MultiPointTypeVar]):
     """A multi-point geometry."""
 
     type: str = "MultiPoint"

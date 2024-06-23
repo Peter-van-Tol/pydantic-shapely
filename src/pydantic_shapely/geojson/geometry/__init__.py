@@ -58,19 +58,50 @@ MAPPING = {
     # shapely.GeometryCollection: GeometryCollection
 }
 
-CONVERTERS = {
-    "Point": lambda shape: Point(coordinates=tuple(shape.coords[0])),
-    "MultiPoint": lambda shape: MultiPoint(
-        coordinates=[tuple(geom.coords[0]) for geom in shape.geoms]
+# NOTE:
+# In both CONVERTERS_2D and CONVERTERS_3D, the `mypy` type checker is ignoring
+# the Point and Multipoint cases. This is because the `shape.coords` attribute
+# is a generic type, whilst the `Point2D` and `MultiPoint2D` classes expect a
+# tuple of floats.
+# The converters work as expected, as proven by the tests. To make `mypy` happy,
+# adding a GuardType is required. This seems a bit out-rageous for justing making
+# `mypy` happy.
+
+CONVERTERS_2D = {
+    "Point": lambda shape: Point2D(coordinates=tuple(shape.coords[0])),  # type: ignore
+    "MultiPoint": lambda shape: MultiPoint2D(
+        coordinates=[tuple(geom.coords[0]) for geom in shape.geoms]  # type: ignore
     ),
-    "LineString": lambda shape: LineString(coordinates=shape.coords),
-    "MultiLineString": lambda shape: MultiLineString(
+    "LineString": lambda shape: LineString2D(coordinates=shape.coords),
+    "MultiLineString": lambda shape: MultiLineString2D(
         coordinates=[geom.coords for geom in shape.geoms]
     ),
-    "Polygon": lambda shape: Polygon(
+    "Polygon": lambda shape: Polygon2D(
         coordinates=[shape.exterior.coords, *[hole.coords for hole in shape.interiors]]
     ),
-    "MultiPolygon": lambda shape: MultiPolygon(
+    "MultiPolygon": lambda shape: MultiPolygon2D(
+        coordinates=[
+            [geom.exterior.coords, *[hole.coords for hole in geom.interiors]]
+            for geom in shape.geoms
+        ]
+    ),
+    # case "GeometryCollection":
+    #     return GeometryCollection(**shape.__geo_interface__)
+}
+
+CONVERTERS_3D = {
+    "Point": lambda shape: Point3D(coordinates=tuple(shape.coords[0])),  # type: ignore
+    "MultiPoint": lambda shape: MultiPoint3D(
+        coordinates=[tuple(geom.coords[0]) for geom in shape.geoms]  # type: ignore
+    ),
+    "LineString": lambda shape: LineString3D(coordinates=shape.coords),
+    "MultiLineString": lambda shape: MultiLineString3D(
+        coordinates=[geom.coords for geom in shape.geoms]
+    ),
+    "Polygon": lambda shape: Polygon3D(
+        coordinates=[shape.exterior.coords, *[hole.coords for hole in shape.interiors]]
+    ),
+    "MultiPolygon": lambda shape: MultiPolygon3D(
         coordinates=[
             [geom.exterior.coords, *[hole.coords for hole in geom.interiors]]
             for geom in shape.geoms
@@ -98,11 +129,11 @@ def convert_shapely_to_geojson_object(
         The GeoJSON geometry object.
     """
     # Check which set of mappings to use
-    mapping = MAPPING_2D
+    mapping = CONVERTERS_2D
     if shape.has_z:
-        mapping = MAPPING_3D
+        mapping = CONVERTERS_3D
     try:
-        return CONVERTERS[shape.geom_type](shape)
+        return mapping[shape.geom_type](shape)
     except KeyError:
         raise ValueError(f"Unsupported Shapely geometry type: {shape.geom_type}")
 

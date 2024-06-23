@@ -4,6 +4,7 @@ import typing
 from inspect import isclass
 
 from pydantic import create_model
+from pydantic.fields import FieldInfo
 
 from pydantic_shapely import FeatureBaseModel, GeometryField
 
@@ -14,13 +15,13 @@ from .geometry import MAPPING, MAPPING_2D, MAPPING_3D
 def create_geojson_datamodel(
     feature_cls: "FeatureBaseModel",
     geometry_field: str,
-) -> GeoJsonFeatureBaseModel[typing.Any]:
+) -> typing.Type[GeoJsonFeatureBaseModel[typing.Any]]:
     """Creates a Pydantic model for the GeoJSON feature.
 
     Returns:
         Type: The Pydantic model for the GeoJSON feature.
     """
-    geometry_field_info = feature_cls.model_fields[geometry_field]
+    geometry_field_info: FieldInfo = feature_cls.model_fields[geometry_field]
     metadata = geometry_field_info.metadata
     # Check the behaviour for z-values
     z_values = "allow"
@@ -36,6 +37,7 @@ def create_geojson_datamodel(
     else:
         mapping = MAPPING
     # Select the correct field_type
+    field_type: object
     if isclass(geometry_field_info.annotation):
         # NOTE: the field_type is always an Union. In case the annotation is a
         # class, the Union will be collapsed to the sole field type. At least
@@ -54,13 +56,16 @@ def create_geojson_datamodel(
         if key != geometry_field
     }
     property_model = create_model(
-        str(feature_cls.__name__) + "GeoJsonProperties",
+        str(feature_cls.__name__) + "GeoJsonProperties",  # type: ignore[attr-defined]
         **fields,
     )
     # Create a model for the GeoJSON feature
+    # NOTE: The __base__ argument is ignored by mypy, because mypy is a static
+    # type checker and does not execute the code. The class created is a dynamic
+    # class, so it is not possible to infer the base class at runtime.
     geo_json = create_model(
-        feature_cls.__name__ + "GeoJsonFeature",
-        __base__=GeoJsonFeatureBaseModel[field_type],
+        feature_cls.__name__ + "GeoJsonFeature",  # type: ignore[attr-defined]
+        __base__=GeoJsonFeatureBaseModel[field_type],  # type: ignore
         __doc__=feature_cls.__doc__,
         properties=(property_model, ...),
     )

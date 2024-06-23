@@ -11,7 +11,7 @@ class GeometryBase(BaseModel, abc.ABC):
     a common interface for all GeoJSON geometries.
     """
 
-    type: str = "LineString"
+    type: str = ""
     coordinates: typing.Any
 
     @abc.abstractmethod

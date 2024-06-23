@@ -7,7 +7,8 @@ from inspect import isclass
 try:
     from typing import Annotated
 except ImportError:
-    from typing_extensions import Annotated
+    # This import is required in Python 3.8
+    from typing_extensions import Annotated  # type: ignore
 
 from pydantic import BaseModel, Field, create_model
 from pydantic.fields import FieldInfo

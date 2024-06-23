@@ -6,6 +6,7 @@ import typing
 import shapely
 from pydantic import BaseModel, Field
 
+from ._base import GeometryBase
 from .linestring import CoordinatesLineString2D, CoordinatesLineString3D
 
 CoordinatesMultiLineString2D = typing.List[CoordinatesLineString2D]
@@ -21,7 +22,7 @@ MultiLineStringTypeVar = typing.TypeVar(
 )
 
 
-class MultiLineStringBase(BaseModel, typing.Generic[MultiLineStringTypeVar]):
+class MultiLineStringBase(GeometryBase, typing.Generic[MultiLineStringTypeVar]):
     """A multi-line string geometry."""
 
     type: str = "MultiLineString"

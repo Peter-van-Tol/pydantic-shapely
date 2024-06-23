@@ -6,6 +6,8 @@ import typing
 import shapely
 from pydantic import BaseModel
 
+from ._base import GeometryBase
+
 CoordinatesPoint2D = typing.Tuple[float, float]
 CoordinatesPoint3D = typing.Tuple[float, float, float]
 CoordinatesPoint = typing.Union[CoordinatesPoint2D, CoordinatesPoint3D]
@@ -14,7 +16,7 @@ PointTypeVar = typing.TypeVar(
 )
 
 
-class PointBase(BaseModel, typing.Generic[PointTypeVar]):
+class PointBase(GeometryBase, typing.Generic[PointTypeVar]):
     """A point geometry."""
 
     type: str = "Point"

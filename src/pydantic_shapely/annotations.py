@@ -55,11 +55,11 @@ class GeometryField:
         __get_pydantic_json_schema__: Generates the JSON schema for the field.
     """
 
-    z_values: ZValues = "allow"
-
     if typing.TYPE_CHECKING:
         # Type variable representing the geometry type.
         __geometry_type__: typing.Type[BaseGeometry]  # pragma: no cover
+
+    z_values: ZValues = "allow"
 
     def _validate_z_values(self, value: BaseGeometry) -> BaseGeometry:
 

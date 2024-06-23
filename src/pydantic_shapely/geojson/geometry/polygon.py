@@ -6,11 +6,13 @@ import typing
 try:
     from typing import Annotated
 except ImportError:
-    from typing_extensions import Annotated
+    # This import is required in Python 3.8
+    from typing_extensions import Annotated  # type: ignore
 
 import shapely
 from pydantic import AfterValidator, BaseModel, Field
 
+from ._base import GeometryBase
 from .point import CoordinatesPoint2D, CoordinatesPoint3D
 
 
@@ -50,7 +52,7 @@ PolygonTypeVar = typing.TypeVar(
 )
 
 
-class PolygonBase(BaseModel, typing.Generic[PolygonTypeVar]):
+class PolygonBase(GeometryBase, typing.Generic[PolygonTypeVar]):
     """A polygon geometry."""
 
     type: str = "Polygon"
