@@ -5,16 +5,15 @@
 # process; the version is automatically set by using ``poetry-dynamic-versioning``.
 name = "pydantic-shapely"
 version = "1.0.0a0"
-description = "Add a short description here!"
+description = "Letting two great packages work together!"
 authors = ["Peter van Tol <peter.van.tol@witteveenbos.com>"]
 license = "MIT"
 readme = "README.rst"
 packages = [{from = "src", include = "pydantic_shapely"}]
 
 # Webpages
-#homepage = "https://python-poetry.org/"
-repository = "https://github.com/python-poetry/poetry"
-documentation = "https://python-poetry.org/docs/"
+repository = "https://github.com/Peter-van-Tol/pydantic-shapely"
+#documentation = "https://python-poetry.org/docs/"
 
 # Classifiers, see https://pypi.org/classifiers/ for available trove classifiers
 classifiers = [
