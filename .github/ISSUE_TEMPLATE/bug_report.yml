@@ -37,7 +37,7 @@ body:
         demonstrating the bug.
 
       placeholder: |
-        import pydantic
+        from pydantic-shapely import GeometryField, FeatureBaseModel
 
         ...
       render: Python
