@@ -1,3 +1,16 @@
+.. |CI-status-badge| image:: https://img.shields.io/github/actions/workflow/status/Peter-van-Tol/pydantic-shapely/pytest.yml?branch=main&logo=github&label=CI
+   :target: https://github.com/Peter-van-Tol/pydantic-shapely/actions 
+.. |version-badge| image:: https://img.shields.io/pypi/v/pydantic-shapely.svg
+   :target: https://pypi.org/project/pydantic-shapely/
+.. |downloads-badge| image:: https://static.pepy.tech/badge/pydantic-shapely/month
+   :target: https://pepy.tech/project/pydantic-shapely
+.. |pyversions-badge| image:: https://img.shields.io/pypi/pyversions/pydantic-shapely.svg
+   :target: https://github.com/Peter-van-Tol/pydantic-shapely
+.. |license-badge| image:: https://img.shields.io/github/license/Peter-van-Tol/pydantic-shapely.svg
+   :target: https://github.com/Peter-van-Tol/pydantic-shapely/blob/main/LICENSE
+
+|CI-status-badge| |version-badge| |downloads-badge| |pyversions-badge| |license-badge|
+
 ================
 pydantic-shapely
 ================
