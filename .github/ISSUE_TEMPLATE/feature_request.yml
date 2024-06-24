@@ -1,0 +1,50 @@
+name: Feature request
+description: Suggest a new feature
+title: "[Feature request]: "
+labels: ["enhancement"]
+
+body:
+  - type: markdown
+    attributes:
+      value: Thank you for contributing to `pydantic-shapely`! ✊
+
+  - type: checkboxes
+    id: searched
+    attributes:
+      label: Initial Checks
+      description: |
+        Just a few checks to make sure you need to create a feature request.
+
+        _Sorry to sound so draconian 👿; but every second spent replying to issues is time not spent improving `pydantic-shapely` 🙇._
+      options:
+        - label: I have searched Google & GitHub for similar requests and couldn't find anything
+          required: true
+        - label: I have read the documentation and couldn't find anything
+          required: true
+        - label: The feature request is limited to combining Pydantic, Shapely and GeoJSON
+          required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: |
+        Please give as much detail as possible about the feature you would like to suggest. 🙏
+
+        You might like to add:
+        * A demo of how code might look when using the feature
+        * Your use case(s) for the feature
+        * Why the feature should be added to pydantic-shapely (as opposed to another library or just implemented in your code)
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: affected-components
+    attributes:
+      label: Affected Components
+      description: Which of the following parts of pydantic-shapely does this feature affect?
+      # keep this lis in sync with bug.yml
+      options:
+        - label: GeometryField, including supported types, validation, and serialization.
+        - label: GeoJSON export and import
+    
