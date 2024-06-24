@@ -10,7 +10,7 @@ except ImportError:
     from typing_extensions import Annotated  # type: ignore
 
 import shapely
-from pydantic import AfterValidator, BaseModel, Field
+from pydantic import AfterValidator, Field
 
 from ._base import GeometryBase
 from .point import CoordinatesPoint2D, CoordinatesPoint3D

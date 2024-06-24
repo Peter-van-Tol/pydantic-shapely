@@ -4,7 +4,6 @@
 import typing
 
 import shapely
-from pydantic import BaseModel, Field
 
 from ._base import GeometryBase
 from .linestring import CoordinatesLineString2D, CoordinatesLineString3D

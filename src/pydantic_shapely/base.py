@@ -10,9 +10,8 @@ except ImportError:
     # This import is required in Python 3.8
     from typing_extensions import Annotated  # type: ignore
 
-from pydantic import BaseModel, Field, create_model
-from pydantic.fields import FieldInfo
-from shapely import LineString, Point, from_geojson, to_geojson
+from pydantic import BaseModel, Field
+from shapely import to_geojson
 from shapely.geometry.base import BaseGeometry
 
 # For static type checking, whilst preventing circular import

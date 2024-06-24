@@ -4,7 +4,6 @@
 import typing
 
 import shapely
-from pydantic import BaseModel
 
 from ._base import GeometryBase
 from .point import CoordinatesPoint2D, CoordinatesPoint3D
