@@ -1,38 +1,65 @@
 ---
 name: Bug report
 about: Create a report to help us improve
-title: ''
-labels: ''
+title: 'Report a bug or unexpected behavior in `pydantic-shapely`'
+labels: 'bug'
 assignees: ''
 
 ---
 
-**Describe the bug**
-A clear and concise description of what the bug is.
+body:
+  - type: markdown
+    attributes:
+      value:  Thank you for contributing to `pydantic-shapely`! ✊
 
-**To Reproduce**
-Steps to reproduce the behavior:
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Initial Checks
+      description: Just making sure you're really using Pydantic V2
+      options:
+        - label: I confirm that I'm using Pydantic V2
+          required: true
 
-**Expected behavior**
-A clear and concise description of what you expected to happen.
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: |
+        Please explain what you're seeing and what you would expect to see.
 
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
+        Please provide as much detail as possible to make understanding and solving your problem as quick as possible. 🙏
+    validations:
+      required: true
 
-**Desktop (please complete the following information):**
- - OS: [e.g. iOS]
- - Browser [e.g. chrome, safari]
- - Version [e.g. 22]
+  - type: textarea
+    id: example
+    attributes:
+      label: Example Code
+      description: >
+        If applicable, please add a self-contained,
+        [minimal, reproducible, example](https://stackoverflow.com/help/minimal-reproducible-example)
+        demonstrating the bug.
 
-**Smartphone (please complete the following information):**
- - Device: [e.g. iPhone6]
- - OS: [e.g. iOS8.1]
- - Browser [e.g. stock browser, safari]
- - Version [e.g. 22]
+      placeholder: |
+        import pydantic
 
-**Additional context**
-Add any other context about the problem here.
+        ...
+      render: Python
+
+  - type: textarea
+    id: version
+    attributes:
+      label: Python, Pydantic, Shapely & OS Version
+      description: |
+        Which version of Python, Pydantic & Shapely are you using, and which Operating System?
+
+        Please run the following command and copy the output below:
+
+        ```bash
+        python -c "import shapely;import pydantic.version;import pydantic_shapely;print('Pydantic-shapely version:', pydantic_shapely.__version__);print('Shapely version:', shapely.__version__);print(pydantic.version.version_info())"
+        ```
+
+      render: Text
+    validations:
+      required: true
