@@ -1,3 +1,4 @@
+from __future__ import annotations
 import typing
 
 try:
@@ -78,7 +79,7 @@ class GeoJsonFeatureBaseModel(BaseModel, typing.Generic[S]):
             ]
         ]
 
-    def to_feature_model(self) -> "FeatureBaseModel":
+    def to_feature_model(self) -> FeatureBaseModel:
         """
         Converts the GeoJSON feature to the FeatureModel this class has been
         based off.
