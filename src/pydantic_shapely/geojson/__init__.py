@@ -9,6 +9,7 @@ from pydantic.fields import FieldInfo
 from pydantic_shapely import FeatureBaseModel, GeometryField
 
 from .feature import GeoJsonFeatureBaseModel
+from .feature_collection import GeoJsonFeatureCollectionBaseModel
 from .geometry import MAPPING, MAPPING_2D, MAPPING_3D
 
 
@@ -69,4 +70,12 @@ def create_geojson_datamodel(
         __doc__=feature_cls.__doc__,
         properties=(property_model, ...),
     )
+    geo_json.ParentDataModel = feature_cls
     return geo_json
+
+
+__all__ = [
+    "create_geojson_datamodel",
+    "GeoJsonFeatureBaseModel",
+    "GeoJsonFeatureCollectionBaseModel",
+]
