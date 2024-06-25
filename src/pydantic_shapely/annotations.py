@@ -113,7 +113,7 @@ class GeometryField:
 
         # Convert the geometry to a point, the geometry should be a valid WKT
         try:
-            geometry: BaseGeometry = shapely.wkt.loads(value)
+            geometry: BaseGeometry = shapely.from_wkt(value)
         except Exception as ex:
             raise ValueError("Supplied string is not a valid WKT-string") from ex
         if isclass(self.__geometry_type__):
@@ -148,7 +148,7 @@ class GeometryField:
             A string representing the serialized Well-Known Text (WKT) representation
             of the geometry object.
         """
-        return shapely.wkt.dumps(value)
+        return shapely.to_wkt(value)
 
     def __get_pydantic_core_schema__(
         self, source: typing.Type[typing.Any], _: GetCoreSchemaHandler
