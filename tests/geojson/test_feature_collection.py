@@ -1,5 +1,9 @@
 import typing
-import pytest
+t
+try:
+    from typing import Annotated
+except ImportError:
+    from typing_extensions import Annotated
 
 from pydantic import Field
 from pydantic_shapely import FeatureBaseModel, GeometryField
@@ -8,7 +12,7 @@ from shapely.geometry import Point
 
 
 class FeatureModel(FeatureBaseModel, geometry_field="point"):
-    point: typing.Annotated[Point, GeometryField(), Field(...)]
+    point: Annotated[Point, GeometryField(), Field(...)]
     name: str = "Hello World"
     answer: int = 42
 
