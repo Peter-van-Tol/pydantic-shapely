@@ -82,9 +82,14 @@ allowed:
 GeoJSON serialization
 ---------------------
 With ``pydantic-shapely`` you can also serialize the a Pydantic model with a Shapely geometry
-to GeoJSON format. In order to add this functionality to your model, you have to inherit from
-the ``FeatureBaseModel`` class. This class is a subclass of the Pydantic ``BaseModel`` class
-and adds the following methods and attributes to the model:
+to GeoJSON format. 
+
+GeoJSON features
+~~~~~~~~~~~~~~~~
+
+In order to add this functionality to your model, you have to inherit from the ``FeatureBaseModel``
+class. This class is a subclass of the Pydantic ``BaseModel`` class and adds the following methods
+and attributes to the model:
 
 - ``GeoJsonDataModel``: an attribute that contains the Pydantic GeoJSON model based on the 
   original model. This model is created when the subclass is created.
@@ -102,7 +107,7 @@ Example usage of the GeoJSON serialization:
     from pydantic_shapely import GeometryField, FeatureBaseModel
     from shapely.geometry import Point
 
-    class MyModel(FeatureBaseModel):
+    class MyModel(FeatureBaseModel, geometry_field="point"):
         point: typing.Annotation[Point, GeometryField(), Field(...)]
         a: int = 42
         b: str = "Hello, World!"
@@ -127,13 +132,14 @@ create a simple annotated API that returns a GeoJSON representation of a Shapely
 
     import typing
     from fastapi import FastAPI
+    from pydantic import Field
     from pydantic_shapely import FeatureBaseModel, GeometryField
     from shapely.geometry import Point
 
     app = FastAPI()
 
-    class MyModel(FeatureBaseModel):
-        point: typing.Annotation[Point, GeometryField(), Field(...)]
+    class MyModel(FeatureBaseModel, geometry_field="point"):
+        point: typing.Annotated[Point, GeometryField(), Field(...)]
 
     @app.get("/point")
     def get_point() -> MyModel.GeoJsonDataModel:
@@ -146,6 +152,140 @@ create a simple annotated API that returns a GeoJSON representation of a Shapely
         # `to_feature_model` method. The Shapely geometry will be returned as a
         # WKT-string in this case.
         return model.to_feature_model()
+
+    if __name__ == "__main__":
+        import uvicorn
+        uvicorn.run(app, host="0.0.0.0", port=8000)
+
+
+GeoJSON feature collections
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Based on the ``GeoJsonDataModel``, a feature collection can be easily created by using the
+``FeatureCollectionBaseModel`` class. This class is a subclass of the Pydantic ``BaseModel``
+class and adds the following methods and attributes to the model:
+
+- ``from_feature_models``: a class method that creates a feature collection from a list of features.
+  The list of features is validated before the feature collection is created. The validation
+  ensures that all features are of the correct type.
+- ``to_feature_models``: a method that returns a list of feature models from the feature collection.
+
+Example usage of the feature collection:
+
+.. code-block:: python
+
+    import typing
+    from shapely import Point
+
+    from pydantic_shapely import FeatureBaseModel, GeometryField
+    from pydantic_shapely.geojson import GeoJsonFeatureCollectionBaseModel
+
+
+    class TestModel(FeatureBaseModel):
+        """Test class for a feature which supports GeoJSON serialization."""
+
+        geometry: typing.Annotated[Point, GeometryField()]
+        name: str = "Hello World"
+        answer: int = 42
+
+
+    TestFeatureCollection = GeoJsonFeatureCollectionBaseModel[TestModel.GeoJsonDataModel]
+
+    # Method 1: Create a feature collection from a list of features.
+    test = TestFeatureCollection(
+        features=[
+            TestModel(geometry=Point(0, 0)).to_geojson_model(),
+            TestModel(geometry=Point(1, 1)).to_geojson_model(),
+        ]
+    )
+    # Method 2: Create a feature collection from a list features using the `from_feature_models`
+    # class method.
+    test = TestFeatureCollection.from_feature_models(
+        [
+            TestModel(geometry=Point(0, 0)),
+            TestModel(geometry=Point(1, 1)),
+        ]
+    )
+
+    # Print the resluting GeoJSON feature collection.
+    print(test.model_dump_json(indent=2))
+    # RESULT:
+    # {
+    #   "type": "FeatureCollection",
+    #   "features": [
+    #     {
+    #       "type": "Feature",
+    #       "geometry": {
+    #         "type": "Point",
+    #         "coordinates": [
+    #           0.0,
+    #           0.0
+    #         ]
+    #       },
+    #       "properties": {
+    #         "name": "Hello World",
+    #         "answer": 42
+    #       }
+    #     },
+    #     {
+    #       "type": "Feature",
+    #       "geometry": {
+    #         "type": "Point",
+    #         "coordinates": [
+    #           1.0,
+    #           1.0
+    #         ]
+    #       },
+    #       "properties": {
+    #         "name": "Hello World",
+    #         "answer": 42
+    #       }
+    #     }
+    #   ]
+    # }
+
+The GeoJSON serialization can also be used with FastApi. The following example shows how to
+create a simple annotated API that returns a GeoJSON Feature Collection:
+
+.. code-block:: python
+
+    import typing
+    from fastapi import FastAPI
+    from pydantic import Field
+    from pydantic_shapely import FeatureBaseModel, GeometryField
+    from pydantic_shapely.geojson import GeoJsonFeatureCollectionBaseModel
+    from shapely.geometry import Point
+
+    app = FastAPI()
+
+    class MyModel(FeatureBaseModel, geometry_field="point"):
+        point: typing.Annotated[Point, GeometryField(), Field(...)]
+        name: str = "Hello World"
+        answer: int = 42
+
+    
+    # NOTE: Sub-classing the GeoJsonFeatureCollectionBaseModel gives a cleaner description
+    # in the API documentation.
+    class MyModelFeatureCollection(GeoJsonFeatureCollectionBaseModel[MyModel.GeoJsonDataModel]):
+        ...
+
+    
+    @app.get("/points")
+    def get_points() -> MyModelFeatureCollection:
+        # Return a GeoJSON representation of a Shapely geometry.
+        return MyModelFeatureCollection.from_feature_models(
+            [
+                MyModel(point=Point(0, 0)).to_geojson_model(),
+                MyModel(point=Point(1, 1)).to_geojson_model(),
+            ]
+        )
+
+    @app.post("/points")
+    def post_points(model: MyModelFeatureCollection) -> typing.List[MyModel]:
+        # Convert the GeoJSON model back to the original model instance with the
+        # `to_feature_model` method. The Shapely geometry will be returned as a
+        # WKT-string in this case.
+        return model.to_feature_models()
 
     if __name__ == "__main__":
         import uvicorn
