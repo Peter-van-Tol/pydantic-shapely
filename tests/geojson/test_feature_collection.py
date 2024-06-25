@@ -1,5 +1,3 @@
-import typing
-t
 try:
     from typing import Annotated
 except ImportError:
