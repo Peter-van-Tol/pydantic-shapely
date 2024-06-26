@@ -50,4 +50,4 @@ class LineString3D(LineStringBase[CoordinatesLineString3D]):
 
 
 class LineString(LineStringBase[CoordinatesLineString]):
-    """A line string geometry, both 2D and 3D points are allowed."""
+    """A line string geometry, both 2D and 3D linestrings are allowed."""
