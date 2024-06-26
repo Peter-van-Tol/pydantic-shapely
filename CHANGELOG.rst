@@ -2,20 +2,15 @@
 Changelog
 =========
 
-
-Version 1.0.0a3 (Under Development)
-===================================
-
-- FEATURE: Added support for Shapely ``GeometryCollection`` geometries;
-- REFACTOR: Changed the GeoJSON geometry models from TypeAlias to sub classes of the corresponding
-  base-models. This gives a better documentation in the API. This has no effects on the functionality
-  of the package.
-
 Version 1.0.0a2
 ===============
 
+- FEATURE: Added support for Shapely ``GeometryCollection`` geometries;
 - FEATURE: Added support for GeoJSon feature collections model that represents
   a GeoJSON feature collection and serialize it to a GeoJSON feature collection;
+- REFACTOR: Changed the GeoJSON geometry models from TypeAlias to sub classes of the corresponding
+  base-models. This gives a better documentation in the API. This has no effects on the functionality
+  of the package.
 - BUGFIX: Changed ``wkt.dumps`` and ``wkt.loads`` to respectively ``shapely.to_wkt`` and 
   ``shapely.wkt.loads``;
 - BUGFIX: Fixed a bug where the class property ``ParentDataModel`` was not being set when the 
