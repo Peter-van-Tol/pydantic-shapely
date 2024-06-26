@@ -37,6 +37,13 @@ class MultiPolygonBase(GeometryBase, typing.Generic[MultiPolygonTypeVar]):
         )
 
 
-MultiPolygon2D = MultiPolygonBase[CoordinatesMultiPolygon2D]
-MultiPolygon3D = MultiPolygonBase[CoordinatesMultiPolygon3D]
-MultiPolygon = MultiPolygonBase[CoordinatesMultiPolygon]
+class MultiPolygon2D(MultiPolygonBase[CoordinatesMultiPolygon2D]):
+    """A 2D multi-polygon geometry."""
+
+
+class MultiPolygon3D(MultiPolygonBase[CoordinatesMultiPolygon3D]):
+    """A 3D multi-polygon geometry."""
+
+
+class MultiPolygon(MultiPolygonBase[CoordinatesMultiPolygon]):
+    """A multi-polygon geometry, both 2D and 3D polygons are allowed."""

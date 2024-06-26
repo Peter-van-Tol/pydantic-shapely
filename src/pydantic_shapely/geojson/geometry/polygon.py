@@ -63,6 +63,13 @@ class PolygonBase(GeometryBase, typing.Generic[PolygonTypeVar]):
         return shapely.Polygon(self.coordinates[0], self.coordinates[1:])
 
 
-Polygon2D = PolygonBase[CoordinatesPolygon2D]
-Polygon3D = PolygonBase[CoordinatesPolygon3D]
-Polygon = PolygonBase[CoordinatesPolygon]
+class Polygon2D(PolygonBase[CoordinatesPolygon2D]):
+    """A 2D polygon geometry."""
+
+
+class Polygon3D(PolygonBase[CoordinatesPolygon3D]):
+    """A 3D polygon geometry."""
+
+
+class Polygon(PolygonBase[CoordinatesPolygon]):
+    """A polygon geometry, both 2D and 3D polygons are allowed."""

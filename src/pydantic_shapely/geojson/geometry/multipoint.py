@@ -30,6 +30,13 @@ class MultiPointBase(GeometryBase, typing.Generic[MultiPointTypeVar]):
         return shapely.MultiPoint(self.coordinates)
 
 
-MultiPoint2D = MultiPointBase[CoordinatesMultiPoint2D]
-MultiPoint3D = MultiPointBase[CoordinatesMultiPoint3D]
-MultiPoint = MultiPointBase[CoordinatesMultiPoint]
+class MultiPoint2D(MultiPointBase[CoordinatesMultiPoint2D]):
+    """A 2D multi-point geometry."""
+
+
+class MultiPoint3D(MultiPointBase[CoordinatesMultiPoint3D]):
+    """A 3D multi-point geometry."""
+
+
+class MultiPoint(MultiPointBase[CoordinatesMultiPoint]):
+    """A multi-point geometry, both 2D and 3D points are allowed."""

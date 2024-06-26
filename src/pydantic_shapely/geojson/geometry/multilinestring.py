@@ -32,6 +32,13 @@ class MultiLineStringBase(GeometryBase, typing.Generic[MultiLineStringTypeVar]):
         return shapely.MultiLineString(self.coordinates)
 
 
-MultiLineString2D = MultiLineStringBase[CoordinatesMultiLineString2D]
-MultiLineString3D = MultiLineStringBase[CoordinatesMultiLineString3D]
-MultiLineString = MultiLineStringBase[CoordinatesMultiLineString]
+class MultiLineString2D(MultiLineStringBase[CoordinatesMultiLineString2D]):
+    """A 2D multi-line string geometry."""
+
+
+class MultiLineString3D(MultiLineStringBase[CoordinatesMultiLineString3D]):
+    """A 3D multi-line string geometry."""
+
+
+class MultiLineString(MultiLineStringBase[CoordinatesMultiLineString]):
+    """A multi-line string geometry, both 2D and 3D line strings are allowed."""

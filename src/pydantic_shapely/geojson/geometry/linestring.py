@@ -41,6 +41,13 @@ class LineStringBase(GeometryBase, typing.Generic[LinesStringTypeVar]):
         return shapely.LineString(self.coordinates)
 
 
-LineString2D = LineStringBase[CoordinatesLineString2D]
-LineString3D = LineStringBase[CoordinatesLineString3D]
-LineString = LineStringBase[CoordinatesLineString]
+class LineString2D(LineStringBase[CoordinatesLineString2D]):
+    """A 2D line string geometry."""
+
+
+class LineString3D(LineStringBase[CoordinatesLineString3D]):
+    """A 3D line string geometry."""
+
+
+class LineString(LineStringBase[CoordinatesLineString]):
+    """A line string geometry, both 2D and 3D points are allowed."""
