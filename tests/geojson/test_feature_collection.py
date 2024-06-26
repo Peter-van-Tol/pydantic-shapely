@@ -4,9 +4,12 @@ except ImportError:
     from typing_extensions import Annotated
 
 from pydantic import Field
-from pydantic_shapely import FeatureBaseModel, GeometryField
-from pydantic_shapely.geojson.feature_collection import GeoJsonFeatureCollectionBaseModel
 from shapely.geometry import Point
+
+from pydantic_shapely import FeatureBaseModel, GeometryField
+from pydantic_shapely.geojson.feature_collection import (
+    GeoJsonFeatureCollectionBaseModel,
+)
 
 
 class FeatureModel(FeatureBaseModel, geometry_field="point"):
@@ -49,8 +52,11 @@ expected_result = """{
   ]
 }"""
 
+
 def test_create_feature_collection_roundtrip():
-    test = GeoJsonFeatureCollectionBaseModel[FeatureModel.GeoJsonDataModel].from_feature_models(
+    test = GeoJsonFeatureCollectionBaseModel[
+        FeatureModel.GeoJsonDataModel
+    ].from_feature_models(
         [
             FeatureModel(point=Point(0, 0)),
             FeatureModel(point=Point(1, 1)),
