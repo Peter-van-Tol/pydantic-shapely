@@ -18,15 +18,22 @@ geometry to a Shapely geometry. To convert a Shapely geometry to a GeoJSON
 geometry, one can use the `to_geojson` function from this sub-module.
 """
 
+import typing
+
 import shapely
 
 from . import _base
-from .linestring import LineString, LineString2D, LineString3D
+from .geometry_collection import (
+    GeometryCollection,
+    GeometryCollection2D,
+    GeometryCollection3D,
+)
+from .linestring import CoordinatesLineString, LineString, LineString2D, LineString3D
 from .multilinestring import MultiLineString, MultiLineString2D, MultiLineString3D
 from .multipoint import MultiPoint, MultiPoint2D, MultiPoint3D
 from .multipolygon import MultiPolygon, MultiPolygon2D, MultiPolygon3D
-from .point import Point, Point2D, Point3D
-from .polygon import Polygon, Polygon2D, Polygon3D
+from .point import CoordinatesPoint, Point, Point2D, Point3D
+from .polygon import CoordinatesPolygon, Polygon, Polygon2D, Polygon3D
 
 MAPPING_2D = {
     shapely.Point: Point2D,
@@ -35,7 +42,7 @@ MAPPING_2D = {
     shapely.MultiLineString: MultiLineString2D,
     shapely.Polygon: Polygon2D,
     shapely.MultiPolygon: MultiPolygon2D,
-    # shapely.GeometryCollection: GeometryCollection2D
+    shapely.GeometryCollection: GeometryCollection2D,
 }
 
 MAPPING_3D = {
@@ -45,7 +52,7 @@ MAPPING_3D = {
     shapely.MultiLineString: MultiLineString3D,
     shapely.Polygon: Polygon3D,
     shapely.MultiPolygon: MultiPolygon3D,
-    # shapely.GeometryCollection: GeometryCollection3D
+    shapely.GeometryCollection: GeometryCollection3D,
 }
 
 MAPPING = {
@@ -55,7 +62,7 @@ MAPPING = {
     shapely.MultiLineString: MultiLineString,
     shapely.Polygon: Polygon,
     shapely.MultiPolygon: MultiPolygon,
-    # shapely.GeometryCollection: GeometryCollection
+    shapely.GeometryCollection: GeometryCollection,
 }
 
 # NOTE:
@@ -66,6 +73,34 @@ MAPPING = {
 # The converters work as expected, as proven by the tests. To make `mypy` happy,
 # adding a GuardType is required. This seems a bit out-rageous for justing making
 # `mypy` happy.
+
+
+def convert_shapely_geometry_collection_to_geojson_coordinates(
+        geom_collection: shapely.geometry.GeometryCollection,
+    ) -> typing.List[
+        typing.Union[CoordinatesPoint, CoordinatesLineString, CoordinatesPolygon]
+    ]:
+    
+
+    coordinates: typing.List[typing.Tuple[typing.Any, ...]] = []
+    for geom in geom_collection.geoms:
+        if geom.geom_type == "Point":
+            coordinates.append(tuple(geom.coords[0]))
+        elif geom.geom_type == "LineString":
+            coordinates.append(tuple(geom.coords))
+        elif geom.geom_type == "Polygon":
+            coordinates.append(
+                (geom.exterior.coords, *[hole.coords for hole in geom.interiors])
+            )
+        else:
+            raise ValueError(f"Unsupported Shapely geometry type: {geom.geom_type}")
+    return typing.cast(
+        typing.List[
+            typing.Union[CoordinatesPoint, CoordinatesLineString, CoordinatesPolygon]
+        ],
+        coordinates,
+    )
+
 
 CONVERTERS_2D = {
     "Point": lambda shape: Point2D(coordinates=tuple(shape.coords[0])),  # type: ignore
@@ -85,8 +120,9 @@ CONVERTERS_2D = {
             for geom in shape.geoms
         ]
     ),
-    # case "GeometryCollection":
-    #     return GeometryCollection(**shape.__geo_interface__)
+    "GeometryCollection": lambda shape: GeometryCollection2D(
+        coordinates=convert_shapely_geometry_collection_to_geojson_coordinates(shape)
+    ),
 }
 
 CONVERTERS_3D = {
@@ -107,8 +143,9 @@ CONVERTERS_3D = {
             for geom in shape.geoms
         ]
     ),
-    # case "GeometryCollection":
-    #     return GeometryCollection(**shape.__geo_interface__)
+    "GeometryCollection": lambda shape: GeometryCollection3D(
+        coordinates=convert_shapely_geometry_collection_to_geojson_coordinates(shape)
+    ),
 }
 
 
@@ -157,9 +194,9 @@ __all__ = [
     "MultiPolygon2D",
     "MultiPolygon3D",
     "MultiPolygon",
-    # "GeometryCollection2D",
-    # "GeometryCollection3D",
-    # "GeometryCollection",
+    "GeometryCollection2D",
+    "GeometryCollection3D",
+    "GeometryCollection",
     "MAPPING_2D",
     "MAPPING_3D",
     "MAPPING",

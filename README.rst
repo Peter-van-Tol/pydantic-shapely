@@ -295,7 +295,6 @@ Work in progress
 ----------------
 This package is still in development. The following features are planned for the future:
 
-- ``GeometryCollection`` is not yet supported.
 - Adding more options for the ``GeometryField`` annotation. For example, the ability to
   set a bounding box for the geometry.
 - Adding the CRS to the both ``GeometryField`` and the GeoJSON serialization. This functionality

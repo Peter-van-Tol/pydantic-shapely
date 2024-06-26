@@ -6,6 +6,7 @@ Changelog
 Version 1.0.0a3 (Under Development)
 ===================================
 
+- FEATURE: Added support for Shapely ``GeometryCollection`` geometries;
 - REFACTOR: Changed the GeoJSON geometry models from TypeAlias to sub classes of the corresponding
   base-models. This gives a better documentation in the API. This has no effects on the functionality
   of the package.

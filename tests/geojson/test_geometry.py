@@ -30,7 +30,11 @@ EXAMPLES_OBJ = {
         ]
     ),
     GeometryCollection: GeometryCollection(
-        [Point(10, 10), Point(30, 30), LineString([(15, 15), (20, 20)])]
+        [
+            Point(10, 10),
+            LineString([(15, 15), (20, 20)]),
+            Polygon([(60, 60), (70, 70), (80, 60), (60, 60)]),
+        ]
     ),
 }
 
@@ -41,7 +45,7 @@ test_geometry = {
     "MultiPoint": MultiPoint,
     "MultiLineString": MultiLineString,
     "MultiPolygon": MultiPolygon,
-    # "GeometryCollection": GeometryCollection
+    "GeometryCollection": GeometryCollection,
 }
 
 
