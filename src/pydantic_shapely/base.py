@@ -37,6 +37,7 @@ class FeatureBaseModel(BaseModel):
     """
 
     __geometry_field__: typing.ClassVar[str] = "geometry"
+    __bbox__: typing.ClassVar[typing.Literal["ignore", "export"]] = "ignore"
 
     if typing.TYPE_CHECKING:
         # Here we provide annotations for the attributes of FeatureModel.
@@ -54,9 +55,15 @@ class FeatureBaseModel(BaseModel):
 
     @classmethod
     def __init_subclass__(cls, **kwargs):
-        # Update the geometry field if it is defined in kwargs
+        # Update  class properties if it is defined in kwargs
         if "geometry_field" in kwargs:
             cls.__geometry_field__ = kwargs.pop("geometry_field")
+        if "bbox" in kwargs:
+            if kwargs["bbox"] not in ["forbid", "allow", "export"]:
+                raise ValueError(
+                    f"Invalid value '{kwargs['bbox']}' for 'bbox'. Must be 'forbid', 'allow' or 'export'."
+                )
+            cls.__bbox__ = kwargs.pop("bbox")
         # Run init subclass from parent classes
         super().__init_subclass__(**kwargs)
 

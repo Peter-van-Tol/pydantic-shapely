@@ -8,8 +8,8 @@ from pydantic.fields import FieldInfo
 
 from pydantic_shapely import FeatureBaseModel, GeometryField
 
-from .feature import GeoJsonFeatureBaseModel
-from .feature_collection import GeoJsonFeatureCollectionBaseModel
+from .feature import GeoJsonFeatureBaseModel, FeatureBoundingBoxMixin
+from .feature_collection import GeoJsonFeatureCollectionBaseModel, FeatureCollectionBoundingBoxMixin
 from .geometry import MAPPING, MAPPING_2D, MAPPING_3D
 
 
@@ -60,13 +60,17 @@ def create_geojson_datamodel(
         str(feature_cls.__name__) + "GeoJsonProperties",  # type: ignore[attr-defined]
         **fields,
     )
+    # Determine the base of the model
+    bases = [GeoJsonFeatureBaseModel[field_type]]
+    if feature_cls.__bbox__ == "export":
+        bases.append(FeatureBoundingBoxMixin)
     # Create a model for the GeoJSON feature
     # NOTE: The __base__ argument is ignored by mypy, because mypy is a static
     # type checker and does not execute the code. The class created is a dynamic
     # class, so it is not possible to infer the base class at runtime.
     geo_json = create_model(
         feature_cls.__name__ + "GeoJsonFeature",  # type: ignore[attr-defined]
-        __base__=GeoJsonFeatureBaseModel[field_type],  # type: ignore
+        __base__=type("_", tuple(bases), {}),  # type: ignore
         __doc__=feature_cls.__doc__,
         properties=(property_model, ...),
     )
@@ -77,5 +81,7 @@ def create_geojson_datamodel(
 __all__ = [
     "create_geojson_datamodel",
     "GeoJsonFeatureBaseModel",
+    "FeatureBoundingBoxMixin",
     "GeoJsonFeatureCollectionBaseModel",
+    "FeatureCollectionBoundingBoxMixin",
 ]
