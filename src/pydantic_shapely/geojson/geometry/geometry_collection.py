@@ -7,27 +7,30 @@ from numbers import Number
 import shapely
 
 from ._base import GeometryBase
-from .point import CoordinatesPoint2D, CoordinatesPoint3D
 from .linestring import CoordinatesLineString2D, CoordinatesLineString3D
+from .point import CoordinatesPoint2D, CoordinatesPoint3D
 from .polygon import CoordinatesPolygon2D, CoordinatesPolygon3D
 
-CoordinatesCollection2D= typing.List[typing.Union[CoordinatesPoint2D, CoordinatesLineString2D, CoordinatesPolygon2D]]
-CoordinatesCollection3D = typing.List[typing.Union[CoordinatesPoint3D, CoordinatesLineString3D, CoordinatesPolygon3D]]
-CoordinatesCollection = typing.Union[
-    CoordinatesCollection2D, CoordinatesCollection3D
+CoordinatesCollection2D = typing.List[
+    typing.Union[CoordinatesPoint2D, CoordinatesLineString2D, CoordinatesPolygon2D]
 ]
-GeometryCollecationTypeVar = typing.TypeVar(
-    "GeometryCollecationTypeVar",
+CoordinatesCollection3D = typing.List[
+    typing.Union[CoordinatesPoint3D, CoordinatesLineString3D, CoordinatesPolygon3D]
+]
+CoordinatesCollection = typing.Union[CoordinatesCollection2D, CoordinatesCollection3D]
+GeometryCollectionTypeVar = typing.TypeVar(
+    "GeometryCollectionTypeVar",
     CoordinatesCollection2D,
     CoordinatesCollection3D,
     CoordinatesCollection,
 )
 
-class GeometryCollectionBase(GeometryBase, typing.Generic[GeometryCollecationTypeVar]):
+
+class GeometryCollectionBase(GeometryBase, typing.Generic[GeometryCollectionTypeVar]):
     """A geometry collection."""
 
     type: str = "LineString"
-    coordinates: GeometryCollecationTypeVar
+    coordinates: GeometryCollectionTypeVar
 
     def to_shapely(self) -> shapely.LineString:
         """Convert the line string to a Shapely line string."""
