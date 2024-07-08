@@ -68,3 +68,17 @@ def test_create_featuremodel_union():
         create_geojson_datamodel(TestModel, "geometry").model_json_schema()
         == TestModelGeoJsonFeature.model_json_schema()
     )
+
+
+def test_create_featuremodel_with_boundingbox():
+
+    class TestModel(FeatureBaseModel, bbox="export"):
+        geometry: Annotated[Point, GeometryField()]
+        a: int
+        b: str
+
+    FeatureModel = TestModel.GeoJsonDataModel
+    assert hasattr(FeatureModel, "bbox"), True
+
+    test = TestModel(geometry=Point(0, 0), a=1, b="test")
+    assert test.to_geojson_model().bbox == (0.0, 0.0, 0.0, 0.0)

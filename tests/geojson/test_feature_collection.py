@@ -67,3 +67,58 @@ def test_create_feature_collection_roundtrip():
         FeatureModel(point=Point(0, 0)),
         FeatureModel(point=Point(1, 1)),
     ]
+
+expected_result_bbox = """{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.0,
+          0.0
+        ]
+      },
+      "properties": {
+        "name": "Hello World",
+        "answer": 42
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1.0,
+          1.0
+        ]
+      },
+      "properties": {
+        "name": "Hello World",
+        "answer": 42
+      }
+    },
+    bbox: [
+      0.0,
+      0.0,
+      1.0,
+      1.0
+    ]
+  ]
+}"""
+
+def test_create_feature_collection_bbox_roundtrip():
+    test = GeoJsonFeatureCollectionBaseModel[
+        FeatureModel.GeoJsonDataModel
+    ].from_feature_models(
+        [
+            FeatureModel(point=Point(0, 0)),
+            FeatureModel(point=Point(1, 1)),
+        ]
+    )
+    assert test.model_dump_json(indent=2) == expected_result
+    assert test.to_feature_models() == [
+        FeatureModel(point=Point(0, 0)),
+        FeatureModel(point=Point(1, 1)),
+    ]
