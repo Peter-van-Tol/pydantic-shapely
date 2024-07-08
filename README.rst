@@ -291,6 +291,130 @@ create a simple annotated API that returns a GeoJSON Feature Collection:
         import uvicorn
         uvicorn.run(app, host="0.0.0.0", port=8000)
 
+Optional fields specified in RFC 7946
+-------------------------------------
+
+The GeoJSON specification allows for optional fields in the GeoJSON feature. These fields are
+``id``, ``crs``, and ``bbox``. The ``id`` field is a string or number that uniquely identifies
+the feature. The ``crs`` field is an object that specifies the coordinate reference system of the
+feature. The ``bbox`` field is an array of numbers that specifies the bounding box of the feature.
+
+id field
+~~~~~~~~
+
+This field is not implemented yet.
+
+crs field
+~~~~~~~~~
+
+This field is not implemented yet.
+
+bbox field
+~~~~~~~~~~
+
+The ``bbox`` field is an array of numbers that specifies the bounding box of the feature. The array
+has either 4 elements in case of a 2-dimensional geometry or 6 elements in case of a 3-dimensional
+geometry. The elements of the array are in the order ``[minx, miny, maxx, maxy]`` for 2-dimensional
+geometries and ``[minx, miny, minz, maxx, maxy, maxz]`` for 3-dimensional geometries.
+
+The ``bbox`` can be added to the GeoJSON feature in two ways:
+
+- By adding the ``bbox`` parameter to the ``FeatureBaseModel`` class. This parameter is a string
+  with the allowed values ``ignore`` and ``export``. The default value is ``ignore``. When the
+  value is set to ``export``, the bounding box of the feature will be added to the GeoJSON
+  representation of the feature. For example:
+
+    .. code-block:: python
+    
+        import typing
+        from pydantic import Field
+        from pydantic_shapely import FeatureBaseModel, GeometryField
+        from shapely.geometry import Point
+    
+        class MyModel(FeatureBaseModel, geometry_field="point", bbox="export"):
+            point: typing.Annotated[Point, GeometryField(), Field(...)]
+            name: str = "Hello World"
+            answer: int = 42
+    
+        model = MyModel(point=Point(0, 0))
+        print(model.model_dump_geojson())
+        # {
+        #     "type": "Feature",
+        #     "geometry": {
+        #         "type": "Point",
+        #         "coordinates": [0.0, 0.0]
+        #     },
+        #     "properties": {
+        #         "name": "Hello World",
+        #         "answer": 42
+        #     },
+        #     "bbox": [0.0, 0.0, 0.0, 0.0]
+        # }
+
+- By inhereting from both the ``FeatureModel.GeoJsonDataModel`` and the ``FeatureBoundingBoxMixin``
+  classes. This method is especially useful when you want to add the bounding box to certain API
+  endpoints.  
+  
+  .. code-block:: python
+
+      import typing
+      from fastapi import FastAPI
+      from pydantic import Field
+      from pydantic_shapely import FeatureBaseModel, GeometryField
+      from pydantic_shapely.geojson import FeatureBoundingBoxMixin
+      from shapely.geometry import Point
+
+      app = FastAPI()
+
+      class MyModel(FeatureBaseModel, geometry_field="point"):
+          point: typing.Annotated[Point, GeometryField(), Field(...)]
+
+      
+      class MyModelFeatur(MyModel.GeoJsonDataModel, FeatureBoundingBoxMixin):
+          ...
+
+      @app.get("/point")
+      def get_point() -> MyModelFeatur:
+          # Return a GeoJSON representation of a Shapely geometry.
+          return MyModel(point=Point(0, 0)).to_geojson_model()
+
+      @app.post("/point")
+      def post_point(model: MyModelFeatur) -> MyModel:
+          # Convert the GeoJSON model back to the original model instance with the
+          # `to_feature_model` method. The Shapely geometry will be returned as a
+          # WKT-string in this case.
+          return model.to_feature_model()
+
+      if __name__ == "__main__":
+          import uvicorn
+          uvicorn.run(app, host="0.0.0.0", port=8000)
+
+For the ``FeatureCollectionBaseModel`` the ``bbox`` parameter can *only* be added to the
+class by using the ``FeatureClassBoundingBoxMixin`` class. The example belows adds the ``bbox``
+to the feature collection, but the individual features do not have a bounding box.
+
+.. code-block:: python
+
+    import typing
+    from pydantic_shapely import FeatureBaseModel, GeometryField
+    from pydantic_shapely.geojson import GeoJsonFeatureCollectionBaseModel, FeatureClassBoundingBoxMixin
+    from shapely.geometry import Point
+
+    class MyModel(FeatureBaseModel, geometry_field="point"):
+        point: typing.Annotated[Point, GeometryField()]
+        name: str = "Hello World"
+        answer: int = 42
+    
+    class MyModelFeatureCollection(
+        GeoJsonFeatureCollectionBaseModel[MyModel.GeoJsonDataModel],
+        FeatureClassBoundingBoxMixin
+    ):
+        ...
+
+In all cases, the bounding box is calculated based on the geometry of the feature(s). The bounding
+box will be therefore always up-to-date with the geometry of the feature(s), even if the GeoJson
+feature(s) are updated after conversion between the model and the GeoJSON representation.
+
 Work in progress
 ----------------
 This package is still in development. The following features are planned for the future:

@@ -5,6 +5,11 @@ Changelog
 Version 1.0.0a2
 ===============
 
+- FEATURE: Added support for bounding box for GeoJSON features and feature collections;
+
+Version 1.0.0a2
+===============
+
 - FEATURE: Added support for Shapely ``GeometryCollection`` geometries;
 - FEATURE: Added support for GeoJSon feature collections model that represents
   a GeoJSON feature collection and serialize it to a GeoJSON feature collection;
