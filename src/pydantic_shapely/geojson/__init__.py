@@ -8,8 +8,11 @@ from pydantic.fields import FieldInfo
 
 from pydantic_shapely import FeatureBaseModel, GeometryField
 
-from .feature import GeoJsonFeatureBaseModel, FeatureBoundingBoxMixin
-from .feature_collection import GeoJsonFeatureCollectionBaseModel, FeatureCollectionBoundingBoxMixin
+from .feature import FeatureBoundingBoxMixin, GeoJsonFeatureBaseModel
+from .feature_collection import (
+    FeatureCollectionBoundingBoxMixin,
+    GeoJsonFeatureCollectionBaseModel,
+)
 from .geometry import MAPPING, MAPPING_2D, MAPPING_3D
 
 

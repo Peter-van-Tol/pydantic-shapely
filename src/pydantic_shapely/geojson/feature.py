@@ -31,7 +31,7 @@ from pydantic_shapely.geojson.geometry import (  # GeometryCollection2D,; Geomet
     Polygon,
     Polygon2D,
     Polygon3D,
-    bounding_box
+    bounding_box,
 )
 
 S = typing.TypeVar(
@@ -108,8 +108,8 @@ class FeatureBoundingBoxMixin(BaseModel):
         # input data (thus complying with the GeoJSON standard), but still using the computed
         # field to determine the bounding box. See also:
         #     https://github.com/pydantic/pydantic/discussions/7782
-        if 'bbox' in data:
-            data.pop('bbox')
+        if "bbox" in data:
+            data.pop("bbox")
         super().__init__(**data)
 
     @computed_field

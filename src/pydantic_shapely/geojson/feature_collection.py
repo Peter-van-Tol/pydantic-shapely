@@ -4,10 +4,9 @@ import typing
 from inspect import isclass
 
 from pydantic import BaseModel, computed_field
+from shapely.ops import unary_union
 
 from pydantic_shapely.base import FeatureBaseModel
-
-from shapely.ops import unary_union
 
 from .feature import GeoJsonFeatureBaseModel
 from .geometry import bounding_box
@@ -131,8 +130,8 @@ class FeatureCollectionBoundingBoxMixin(BaseModel):
         # input data (thus complying with the GeoJSON standard), but still using the computed
         # field to determine the bounding box. See also:
         #     https://github.com/pydantic/pydantic/discussions/7782
-        if 'bbox' in data:
-            data.pop('bbox')
+        if "bbox" in data:
+            data.pop("bbox")
         super().__init__(**data)
 
     @computed_field
