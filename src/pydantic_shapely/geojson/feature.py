@@ -8,7 +8,7 @@ except ImportError:
     # This import is required in Python 3.8
     from typing_extensions import Annotated  # type: ignore
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, computed_field
 from shapely import from_geojson
 
 from pydantic_shapely.base import FeatureBaseModel
@@ -31,6 +31,7 @@ from pydantic_shapely.geojson.geometry import (  # GeometryCollection2D,; Geomet
     Polygon,
     Polygon2D,
     Polygon3D,
+    bounding_box
 )
 
 S = typing.TypeVar(
@@ -92,3 +93,39 @@ class GeoJsonFeatureBaseModel(BaseModel, typing.Generic[S]):
             **self.properties.model_dump(),
         }
         return self.ParentDataModel.model_validate(property_dict)
+
+
+class FeatureBoundingBoxMixin(BaseModel):
+    """
+    Mixin class for adding bounding box functionality to a Pydantic model.
+
+    Attributes:
+        bbox: The bounding box of the geometry.
+    """
+
+    def __init__(self, /, **data: typing.Any) -> None:
+        # Remove the bbox field from the data. This is to allow the bbox to be part of the
+        # input data (thus complying with the GeoJSON standard), but still using the computed
+        # field to determine the bounding box. See also:
+        #     https://github.com/pydantic/pydantic/discussions/7782
+        if 'bbox' in data:
+            data.pop('bbox')
+        super().__init__(**data)
+
+    @computed_field
+    @property
+    def bbox(
+        self,
+    ) -> typing.Union[
+        typing.Tuple[float, float, float, float],
+        typing.Tuple[float, float, float, float, float, float],
+    ]:
+        """
+        Determine the bounding box of a Shapely geometry. This function will
+        either return a 2D or 3D bounding box, depending on the presence of z-values.
+
+        Returns:
+            tuple[]: The bounding box of the geometry. Either containing 4 (2D) or
+            6 (3D) values.
+        """
+        return bounding_box(self.geometry.to_shapely())

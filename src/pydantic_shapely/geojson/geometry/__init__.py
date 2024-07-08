@@ -76,11 +76,10 @@ MAPPING = {
 
 
 def convert_shapely_geometry_collection_to_geojson_coordinates(
-        geom_collection: shapely.geometry.GeometryCollection,
-    ) -> typing.List[
-        typing.Union[CoordinatesPoint, CoordinatesLineString, CoordinatesPolygon]
-    ]:
-    
+    geom_collection: shapely.geometry.GeometryCollection,
+) -> typing.List[
+    typing.Union[CoordinatesPoint, CoordinatesLineString, CoordinatesPolygon]
+]:
 
     coordinates: typing.List[typing.Tuple[typing.Any, ...]] = []
     for geom in geom_collection.geoms:
@@ -173,6 +172,37 @@ def convert_shapely_to_geojson_object(
         return mapping[shape.geom_type](shape)
     except KeyError:
         raise ValueError(f"Unsupported Shapely geometry type: {shape.geom_type}")
+
+
+def bounding_box(
+    shape: shapely.geometry.base.BaseGeometry,
+) -> typing.Union[
+    typing.Tuple[float, float, float, float],
+    typing.Tuple[float, float, float, float, float, float],
+]:
+    """Determine the bounding box of a Shapely geometry. This function will
+    either return a 2D or 3D bounding box, depending on the presence of z-values.
+
+    Returns:
+        tuple[]: The bounding box of the geometry. Either containing 4 (2D) or
+        6 (3D) values.
+    """
+    if not shape.has_z:
+        # Use normal bounds-function for 2D geometries
+        return shape.bounds
+    minx, maxx, miny, maxy = shape.bounds
+    # Determine bounds of the shape
+    minz = float("inf")
+    maxz = float("-inf")
+    for coord in shapely.get_coordinates(shape, include_z=True):
+        minz = min(minz, coord[2])
+        maxz = max(maxz, coord[2])
+    # Default behaviour for missing z-values
+    if minz == float("inf"):
+        minz = float("nan")
+    if maxz == float("-inf"):
+        maxz = float("nan")
+    return [minx, miny, minz, maxx, maxy, maxz]
 
 
 __all__ = [
