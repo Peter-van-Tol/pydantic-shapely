@@ -190,7 +190,7 @@ def bounding_box(
     if not shape.has_z:
         # Use normal bounds-function for 2D geometries
         return shape.bounds
-    minx, maxx, miny, maxy = shape.bounds
+    minx, miny, maxx, maxy = shape.bounds
     # Determine bounds of the shape
     minz = float("inf")
     maxz = float("-inf")
@@ -202,7 +202,7 @@ def bounding_box(
         minz = float("nan")
     if maxz == float("-inf"):
         maxz = float("nan")
-    return [minx, miny, minz, maxx, maxy, maxz]
+    return (minx, miny, minz, maxx, maxy, maxz)
 
 
 __all__ = [
