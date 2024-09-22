@@ -4,7 +4,7 @@
 # The version entry must be present, however it is further ignored by the build
 # process; the version is automatically set by using ``poetry-dynamic-versioning``.
 name = "pydantic-shapely"
-version = "1.0.0a2"
+version = "1.0.0a3"
 description = "Letting two great packages work together!"
 authors = ["Peter van Tol <peter.van.tol@witteveenbos.com>"]
 license = "MIT"

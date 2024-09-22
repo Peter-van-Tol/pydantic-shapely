@@ -2,6 +2,17 @@
 Changelog
 =========
 
+
+Version 1.0.0a3
+===============
+
+- BUGFIX: Removed ``numpy`` as a dependency. This was causing issues with the installation of the
+  package, since it was pinned to strictly. The dependency is not required, as ``shapely`` already
+  has a dependency on ``numpy``.;
+- BUGFIX: When using the ``GeometryField`` it is now possible to instantiate the field with a the
+  default ``shapely`` constructor. I.e. a ``MultiPolygon`` can be instantiated with a list of
+  ``Polygon`` objects; 
+
 Version 1.0.0a2
 ===============
 
