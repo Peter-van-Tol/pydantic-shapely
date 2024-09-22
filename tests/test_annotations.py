@@ -44,7 +44,7 @@ EXAMPLES_BASE = {
     LineString: ((10, 10), (20, 20), (21, 30)),
     Polygon: (((0, 0), (0, 40), (40, 40), (40, 0), (0, 0))),
     MultiPoint: (Point(0, 0), Point(10, 20), Point(15, 20), Point(30, 30)),
-    MultiLineString: (LineString(((10, 10), (20, 20))), LineString((15, 15), (30, 15))),
+    MultiLineString: (LineString(((10, 10), (20, 20))), LineString(((15, 15), (30, 15)))),
     MultiPolygon: (
     Polygon([(10, 10), (10, 20), (20, 20), (20, 15), (10, 10)],),
     Polygon([(60, 60), (70, 70), (80, 60), (60, 60)],)
