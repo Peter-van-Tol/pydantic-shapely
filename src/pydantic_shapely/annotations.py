@@ -90,51 +90,53 @@ class GeometryField:
             ValueError: If the input value is not a valid WKT-string or if the
             supplied geometry is not of the expected type.
         """
-        # Test whether user supplied the geometry directly
+        # - Test whether user supplied the geometry directly
         if isinstance(value, BaseGeometry):
+            geometry = value
+        # - convert a (WKT-) string to a object
+        elif isinstance(value, str):
+            try:
+                geometry: BaseGeometry = shapely.from_wkt(value)
+            except Exception as ex:
+                raise ValueError("Supplied string is not a valid WKT-string") from ex
+        # - last resort, pass the value to the constructor of shapely
+        else:
+            # - get the types that are supported by the field
             if isclass(self.__geometry_type__):
-                # The geometry type is a class, check if the geometry is an instance of the class
-                if isinstance(value, self.__geometry_type__):
-                    return self._validate_z_values(value)
-                raise ValueError(
-                    f"Supplied geometry ({value.geom_type}) is not a "
-                    f"{self.__geometry_type__.__name__}."
-                )
+                supported_types = [self.__geometry_type__]
             else:
-                # The geometry type is a Union, check if the geometry is an instance of any of the
-                # classes
                 supported_types = typing.get_args(self.__geometry_type__)
-                if any(isinstance(value, t) for t in supported_types):
-                    return self._validate_z_values(value)
+            # - for each type, check we can instantiate the geometry with the value
+            #   from the field
+            for t in supported_types:
+                try:
+                    geometry = t(value)
+                    break
+                except Exception:
+                    pass
+            else:
                 raise ValueError(
-                    f"Supplied geometry ({value.geom_type}) is not one of the expected "
-                    f"types: {', '.join([t.__name__ for t in supported_types])}."
+                    f"Supplied value ({value}) cannot be converted to a valid geometry."
                 )
 
-        # Convert the geometry to a point, the geometry should be a valid WKT
-        try:
-            geometry: BaseGeometry = shapely.from_wkt(value)
-        except Exception as ex:
-            raise ValueError("Supplied string is not a valid WKT-string") from ex
         if isclass(self.__geometry_type__):
             # The geometry type is a class, check if the geometry is an instance of the class
-            if not isinstance(geometry, self.__geometry_type__):
-                raise ValueError(
-                    f"Supplied geometry ({geometry.geom_type}) is not a "
-                    f"{self.__geometry_type__.__name__}."
-                )
+            if isinstance(geometry, self.__geometry_type__):
+                return self._validate_z_values(geometry)
+            raise ValueError(
+                f"Supplied geometry ({geometry.geom_type}) is not a "
+                f"{self.__geometry_type__.__name__}."
+            )
         else:
             # The geometry type is a Union, check if the geometry is an instance of any of the
             # classes
             supported_types = typing.get_args(self.__geometry_type__)
-            if not any(isinstance(geometry, t) for t in supported_types):
-                raise ValueError(
-                    f"Supplied geometry ({geometry.geom_type}) is not one of the expected "
-                    f"types: {', '.join([t.__name__ for t in supported_types])}."
-                )
-        # Custom validations
-        geometry = self._validate_z_values(geometry)
-        return geometry
+            if any(isinstance(geometry, t) for t in supported_types):
+                return self._validate_z_values(geometry)
+            raise ValueError(
+                f"Supplied geometry ({geometry.geom_type}) is not one of the expected "
+                f"types: {', '.join([t.__name__ for t in supported_types])}."
+            )
 
     @staticmethod
     def serialize(value) -> str:
