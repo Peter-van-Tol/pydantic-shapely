@@ -3,6 +3,11 @@ Changelog
 =========
 
 
+Version 1.0.0a4
+===============
+
+- Unpinned `pydantic` package version;
+
 Version 1.0.0a3
 ===============
 
