@@ -45,9 +45,6 @@ classifiers = [
 python = ">=3.8,<4.0"
 pydantic = ">=2.5"
 shapely = ">=2.0"
-setuptools = [
-    { version="^70.1.0", markers="python_version >= '3.10'" },
-]
 typing-extensions = [
     { version="^4.12.2", python = "<3.10" }
 ]
@@ -64,6 +61,9 @@ pytest-cov = "^5.0.0"
 numpy = [
     { version=">2.0", python = ">=3.10" },
     { version="1.21.1", python = "<3.10" }
+]
+setuptools = [
+    { version="^70.1.0", markers="python_version >= '3.10'" },
 ]
 
 [tool.poetry.group.docs.dependencies]
