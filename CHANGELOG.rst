@@ -3,6 +3,12 @@ Changelog
 =========
 
 
+Version 1.0.0a5
+===============
+
+- Examples for 3D geometries are now used when the geometry field is instantiated with
+  ``z_values="required"``;
+
 Version 1.0.0a4
 ===============
 

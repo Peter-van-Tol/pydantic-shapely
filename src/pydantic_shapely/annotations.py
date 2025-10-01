@@ -25,6 +25,22 @@ EXAMPLES = {
     "LINESTRING (15 15, 20 20)"
     ")",
 }
+EXAMPLES3D = {
+    shapely.Point: "POINT Z (10 20 30)",
+    shapely.LineString: "LINESTRING Z (10 10 30, 20 20 30, 21 30 30)",
+    shapely.Polygon: "POLYGON Z ((0 0 30, 0 40 30, 40 40 30, 40 0 30, 0 0 30))",
+    shapely.MultiPoint: "MULTIPOINT Z ((0 0 30), (10 20 30), (15 20 30), (30 30 30))",
+    shapely.MultiLineString: "MULTILINESTRING Z ((10 10 30, 20 20 30), (15 15 30, 30 15 30))",
+    shapely.MultiPolygon: "MULTIPOLYGON Z("
+    "((10 10 30, 10 20 30, 20 20 30, 20 15 30, 10 10 30)),"
+    "((60 60 30, 70 70 30, 80 60 30, 60 60 30))"
+    ")",
+    shapely.GeometryCollection: "GEOMETRYCOLLECTION("
+    "POINT Z (10 10 30), "
+    "POINT Z (30 30 30), "
+    "LINESTRING Z (15 15 30, 20 20 30)"
+    ")",
+}
 
 # The ZValues describe how the geometry handles z-values:
 # - forbidden: the geometry must be strictly 2-dimensional. A ValueError will
@@ -184,10 +200,16 @@ class GeometryField:
         # Determine the example WKT string for the geometry type.
         examples = [""]
         if isclass(self.__geometry_type__):
-            examples = [EXAMPLES.get(self.__geometry_type__, "POINT (0 0)")]
+            if self.z_values is "required":
+                examples = [EXAMPLES3D.get(self.__geometry_type__, "POINT Z (0 0 0)")]
+            else:
+                examples = [EXAMPLES.get(self.__geometry_type__, "POINT (0 0)")]
         else:
             requested_types = typing.get_args(self.__geometry_type__)
-            examples = [EXAMPLES[t] for t in requested_types if t in EXAMPLES]
+            if self.z_values is "required":
+                examples = [EXAMPLES3D[t] for t in requested_types if t in EXAMPLES3D]
+            else:
+                examples = [EXAMPLES[t] for t in requested_types if t in EXAMPLES]
         # Create the JSON schema for the geometry field.
         json_schema = handler(_core_schema)
         json_schema = handler.resolve_ref_schema(json_schema)
