@@ -200,13 +200,13 @@ class GeometryField:
         # Determine the example WKT string for the geometry type.
         examples = [""]
         if isclass(self.__geometry_type__):
-            if self.z_values is "required":
+            if self.z_values == "required":
                 examples = [EXAMPLES3D.get(self.__geometry_type__, "POINT Z (0 0 0)")]
             else:
                 examples = [EXAMPLES.get(self.__geometry_type__, "POINT (0 0)")]
         else:
             requested_types = typing.get_args(self.__geometry_type__)
-            if self.z_values is "required":
+            if self.z_values == "required":
                 examples = [EXAMPLES3D[t] for t in requested_types if t in EXAMPLES3D]
             else:
                 examples = [EXAMPLES[t] for t in requested_types if t in EXAMPLES]
