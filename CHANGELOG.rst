@@ -2,6 +2,11 @@
 Changelog
 =========
 
+Version 1.0.0a6
+===============
+
+- Removed ``setuptools`` as a dependency (#16).
+- Added support for Python 3.14.
 
 Version 1.0.0a5
 ===============
